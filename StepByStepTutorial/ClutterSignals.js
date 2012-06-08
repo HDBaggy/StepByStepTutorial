@@ -1,7 +1,6 @@
 //Import the clutter class form the gi repository(the object introspection repository)
 const Clutter = imports.gi.Clutter;
 
-
 //Initialice clutter
 Clutter.init (null);
 /*
@@ -39,6 +38,7 @@ stage.add_actor(actorRectangle);
 //As we say, the stage is also an actor, so we show it to make visible
 stage.show ();
 //Start a main loop so that the stage can animate its contents and respond to user interaction. 
+Clutter.main();
 
 function changeRectanglePosition()
 {
@@ -60,4 +60,3 @@ function changeRectanglePosition()
 	 */
 	actorRectangle.set_position(newx, newy);
 }
-Clutter.main();

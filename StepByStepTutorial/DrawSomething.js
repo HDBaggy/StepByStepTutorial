@@ -12,7 +12,6 @@ Clutter.init (null);
 let stage = new Clutter.Stage();
 
 //We connect the destroy event to quit from the mainloop when we close the window.
-
 stage.connect("destroy", Clutter.main_quit);
 //Put some title
 stage.title = "Test";
