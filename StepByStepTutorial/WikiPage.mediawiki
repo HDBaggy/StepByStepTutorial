@@ -1,0 +1,619 @@
+= Step by step tutorial to create extensions =
+
+''Phrases or words in bigger need to be reviewed to ensure that is correct''
+
+''To review''
+
+[[#toReview-1]]
+[[#toReview-2]]
+[[#toReview-3]]
+[[#toReview-4]]
+[[#toReview-5]]
+
+<<Anchor(index)>>
+ * [[#fromScratch | From scratch]]
+   * [[#fromScratch-settingUpEclipse | Setting up eclipse]]
+   * [[#fromScratch-settingUpEclipse-problems | Problems setting up eclipse]]
+   * [[#fromScratch-usingEclipse|Using eclipse]]
+ * [[#knowingJavascript | Knowing javascript for gnome-shell]]
+   * [[#knowingJavascript-introducingJavascript | Introducing javascript]]
+   * [[#knowingJavascript-howExtends|How extends functionality]]
+ * [[#knowingClutter|Knowing clutter]]
+   * [[#knowingClutter-introducingClutter|Introducing clutter]]
+   * [[#knowingClutter-signals|Signals]]
+   * [[#knowingClutter-someExamples|Some examples with raw clutter]]
+     *[[#knowingClutter-someExamples-init | Init clutter and stage]]
+     *[[#knowingClutter-someExamples-draw | Draw something]]
+     *[[#knowingClutter-someExamples-signals | Add some signals to make it interactive]]
+     *[[#knowingClutter-someExamples-animate | Animations]]
+     *[[#knowingClutter-someExamples-game | Game with all together]]
+   * [[#knowingClutter-problems | Problems]]
+ * [[#knowingGnomeShell|Knowing gnome-shell]]
+   * [[#knowingGnomeShell-introducing|Introducing gnome shell]]
+   * [[#knowingGnomeShell-interactionWithClutter|Interaction with clutter]]
+   * [[#knowingGnomeShell-API|API]]
+ * [[#lookingGlass|Looking glass]]
+ * [[#myFirstExtension | My first extension]]
+ * [[#errorsAndDebug | How to know your errors and debug your code]]
+   * [[#errorsAndDebug-knowYourErrors|Know your errors]]
+   * [[#errorsAndDebug-redirectOutput|Redirect output to error console]]
+ * [[#interestingClasses | Accessing some interesting objects of gnome-shell]]
+ * [[#extensionExamples | Some extensions examples]]
+   * [[#extensionExamples-extensionUsingDash|Extension using dash]]
+   * [[#extensionExamples-extensionUsingWindows|Extension using windows]]
+   * [[#extensionExamples-extensionUsingWorkspace|Extension using workspace]]
+   * [[#extensionExamples-extensionUsingApplications|Extension using applications]]
+   * [[#extensionExamples-extensionUsingMessageTray|Extension using message tray]]
+   * [[#extensionExamples-extensionUsingTopBar|Extension using top bar]]
+ * [[#allCode | All code to download or modify]]
+ * [[#support | Support]]
+
+<<Anchor(fromScratch)>>
+= From scratch =
+<<Anchor(fromScratch-settingUpEclipse)>>
+== Setting up eclipse ==
+<<Anchor(fromScratch-settingUpEclipse-whyUseAnIde)>>
+=== Why use an IDE ===
+
+It is very helpful to develop using an IDE with javascript support. It will help us with code folding, autocompletion, outline, etc.
+
+Gnome has his own IDE for develop, called Anjuta. The problem is that IDE has some feature lacks, like autocompletion, code folding, etc... so for me it is better to develop using eclipse until anjuta envolves to have this kind of features.
+
+So, we start setting up eclipse to have javascript support.
+
+Setting up eclipse
+
+Install eclipse from your app store of your distribution. Open eclipse and select your workspace Go to Help->Install new software Select Work with "All available sites" Search for javascript Install That's it!
+<<Anchor(fromScratch-settingUpEclipse-problems)>>
+=== Problems ===
+
+I haven't got eclipse in my distribution
+Go to http://www.eclipse.org/downloads/ and download eclipse classic.
+I select work with "All avaiable sites" but nothing is shown
+Go to "Find more software by working with "All available software sites" preferences" and add your eclipse download site, that it depens on the eclipse version you have. For eclipse Juno it is http://download.eclipse.org/releases/juno
+
+[[#index | Go to index]]
+
+<<Anchor(fromScratch-usingEclipse)>>
+== Using eclipse ==
+
+When you create an extension, the extension is saved at ~/.local/shared/gnome-shell/extensions with a gnome-shell extension folder format, so you can't create a project here and edit the files expecting that each change you do reflects directly in the gnome-shell. So, for use eclipse to develop extensions, the best way is to open directly the file you are editing, like ~/.local/shared/gnome-shell/extensions/myExtensionFolder/myExtension.js
+
+To visualize the changes you have to have enabled the extension. To enable the extension use gnome-tweak-tool.
+
+After that, each change yo do you have to save the file and restart the shell (Alt+F2 , write "r" without quotes, enter)
+
+[[#index | Go to index]]
+
+<<Anchor(knowingJavascript)>>
+= Knowing javascript for gnome-shell =
+
+<<Anchor(knowingJavascript-introducingJavascript)>>
+== Introducing javascript ==
+JavaScript (sometimes abbreviated JS) is a prototype-based scripting language that is dynamic, weakly typed and has first-class functions. It is a multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.
+
+Gnome-shell is written in javascript because it allows a quick prototyping. It means that it allows to change the code quickly, and do a lot of changes in a easy way. It is needed because gnome-shell is a application that is in a quick development, and it changes a lot in short time.
+<<Anchor(toReview-1)>>
+The diference between javascript and other dynamic languages (python, ruby, php, etc...) is that javascript doesn't depends in a specific platform, so ~+gnome-shell can run it without any platform under it +~.
+
+This is an extended web page about programming in javascript (web oriented). Some things changes because we are not programming for the web, but most is the same. There's the web:
+https://developer.mozilla.org/en-US/learn/javascript
+
+Quick characteristic things:
+<<Anchor(toReview-2)>>
+ * ~+ Classes, objects, variables, functions is less or more the same. +~
+ * To access some function or variable: object.function() / object.variable or object.function() / object['function']()
+<<Anchor(toReview-3)>>
+ * ~+ You can modify the code while running +~
+ * class.prototype allow you inheritance or modify the base class directly rewriting his code.
+ * Variables without scope. So, if you do "var x", x will be in all of your program. The only way to restrict the scope is "let x" that make the variable x only usable in his scope.
+ * If we want to use "this" outside of his scope we need the class Lang. The use is in this way: functionOutsideOfScope(Lang.bind(this, this.function())). See https://live.gnome.org/GnomeShell/Gjs_StyleGuide ""this" in closures" to see one example.
+
+[[#index | Go to index]]
+
+<<Anchor(knowingJavascript-howExtends)>>
+== How extends functionality ==
+
+'' Don't do anything until we arrive to the extensions headland, because you don't know how to create, enable and some importants parts of an extension''
+
+The main way to extend functionality is rewritten the code of the gnome-shell in this way:
+We have a class called Workspace (File: /usr/share/gnome-shell/js/ui/Workspace. The class is something like this:
+{{{#!java
+const Workspace = new Lang.Class({
+    Name: 'Workspace',
+
+    _init : function(metaWorkspace, monitorIndex) {
+        // When dragging a window, we use this slot for reserve space.
+        this._reservedSlot = null;
+        this.metaWorkspace = metaWorkspace;
+etc...
+
+_lookupIndex: function (metaWindow) {
+        for (let i = 0; i < this._windows.length; i++) {
+            if (this._windows[i].metaWindow == metaWindow) {
+                return i;
+            }
+        }
+        return -1;
+    },
+})
+}}}
+
+And we want to modify the _lookupIndex to return always 1. So we do this in our extension:
+
+{{{#!java
+Workspace.prototype['_lookupIndex'] = function (metaWindow){ return 1; }
+}}}
+
+As we saw in the Javascript attachment paper, we can modify the base class editting his "prototype". To access some function, object, variable, etc. we put the name of the function/variable/object/etc bracketed in a string format. In the right side of equal, we write our function that we want to replace the function of the left side.
+
+After enabling our extension and restarting the shell, if we execute the Workspace._lookupIndex function, we get always 1 in return value.
+
+Another way to extend funcionality is to injecting code, with this function:
+{{{#!java
+function injectToFunction(parent, name, func)
+{
+	let origin = parent[name];
+	parent[name] = function()
+	{
+		let ret;
+		ret = origin.apply(this, arguments);
+		if (ret === undefined)
+			ret = func.apply(this, arguments);
+		return ret;
+	}
+	return origin;
+}
+
+function removeInjection(object, injection, name)
+{
+	if (injection[name] === undefined)
+		delete object[name];
+	else
+		object[name] = injection[name];
+}
+
+}}}
+
+And to inject some code in a function use this in this way:
+
+{{{#!java
+//We store the injection, for after have the option to dissable the injection.
+inections=[];
+injections['injectionOfLookupIndex']=injectToFunction(Workspace.prototype, '_lookupIndex',  function(){return 1;});
+}}}
+
+And to desinject the code
+
+{{{#!java
+removeInjection(Workspace.prototype, injections,  'injectionOfLookupIndex');
+}}}
+
+<<Anchor(toReview-4)>>
+With this, we can add some code to the function without rewriting all the function. Our code is write ~+ before the return statement of the original function and after all code of original function+~
+
+We'll see why we need to desinject the code in "my first extensions" headland.
+
+[[#index | Go to index]]
+
+<<Anchor(knowingClutter)>>
+= Knowing clutter =
+
+<<Anchor(knowingClutter-introducingClutter)>>
+== Introducing clutter ==
+
+Clutter is a C programming API that allows you to create simple but visually appealing and involving user interfaces. It offers a variety of objects (actors) which can be placed on a canvas (stage) and manipulated by the application or the user. It is therefore a "retained mode" graphics API. Unlike traditional 2D canvas APIs, Clutter allows these actors to move partly in the Z dimension.
+It is used by gnome-shell to implement all the GUI of gnome-shell.
+
+There's three tecnologies that allow us to use easily clutter with javascript:
+
+<<Anchor(toReview-5)>>
+Clutter use [[https://live.gnome.org/GObjectIntrospection | GObjectIntrospection]], project that allows to use c programs from other programming languages directly and it allows us to work in javascript with it, instead of using c. ~+It works transforming the c program API in general files(xml or custom files) allowing to write easily a binding in other program language that can interpret it.+~
+
+From that, we need a program that get the general file result from GObjectIntrospection and transform it to a specific program language, like javascript. This program is specific for each program language, an for javascript it is called [[https://live.gnome.org/Gjs | Gjs]].
+
+Also, gnome-shell has his own clutter-based toolkit, called [[http://developer.gnome.org/st/stable/ | St]], that give you some useful actors(components in the GUI).
+
+
+So we have:
+Clutter in c -> GObjectIntrospection(result in a generl file) ->
+ * -> Gjs(interprets general file from GObjectIntrospection to javascript)
+ * -> pyclutter (interprets general file from GObjectIntrospection to python)
+ * -> clutter-perl (interprets general file from GObjectIntrospection to perl)
+ * -> etc.
+
+All bindings: http://www.clutter-project.org/about/language-bindings
+
+Important caracteristci things in clutter is:
+ * Stage: contain some actors(text, rectangles etc). It's the window of the application. Also is an actor.
+ * Actor: GUI object
+   * show() : you have to show each actor to ve visible to the user
+   * hide() : hide the actor
+
+[[#index | Go to index]]
+
+<<Anchor(knowingClutter-events)>>
+== Events ==
+
+We need events to do the GUI interactive and reactive to mouse cliks and keyboard inputs.
+also, we can use custom events inside our program, to communicate by events functions in our program.
+
+By default, each actor in clutter has these events:
+ * button-press-event: Emitted when the user presses the mouse over the actor.
+ * button-release-event: Emitted when the user releases the mouse over the actor.
+ * motion-event: Emitted when the user moves the mouse over the actor.
+ * enter-event: Emitted when the user moves the mouse in to the actor's area.
+ * leave-event: Emitted when the user moves the mouse out of the actor's area.
+All events:
+http://docs.clutter-project.org/docs/clutter/stable/ClutterActor.html
+And look at the bottom, there is all the events emitted by the actor.
+ 
+We can associate each event with one actor and a function that will be called when the event occurs to do
+what we want to do when the event occurs(like move the actor when we click it, change his opacity when we hover it, etc.)
+This association is called "connect".
+
+So, to connect one actor to one event:
+actor.connect(eventName, functionToCallWhenEventOccurs);
+
+For example:
+{{{#!java
+//Create new actor
+actor=new Clutter.Actor();
+/*
+ * Connect the actor to the enter-event and it will call moveActor function when
+ * we click the actor
+*/
+actor.connect('enter-event', moveActor);
+
+/*
+ * Automatically, the enter event pass some parameters to the function.
+ * these parameters are the event and the actor.
+ * http://docs.clutter-project.org/docs/clutter/stable/ClutterActor.html
+ * in the document above, search for "The "leave-event" signal"
+*/
+function  moveActor(actor, event)
+{
+    let x=0;
+    let y=2;
+    //Set the new position to the actor.
+    actor.set_position(x, y);
+}
+}}}
+
+[[#index | Go to index]]
+
+<<Anchor(knowingClutter-someExamples)>>
+== Some examples with raw clutter ==
+
+<<Anchor(knowingClutter-someExamples-init)>>
+=== Init clutter and stage ===
+{{{#!java
+//Import the clutter class form the gi repository(the object introspection repository)
+const Clutter = imports.gi.Clutter;
+// Initialice clutter
+Clutter.init(null);
+/*
+ * Create a stage. This function returns a new default stage, with its own
+ * window. ClutterStage is derived from the ClutterActor object so many of that
+ * object's functions are useful for the stage. For instance, call
+ * Clutter.Stage.get_default().show() to make the stage visible.
+ */
+let stage = new Clutter.Stage();
+
+// We connect the destroy event to quit from the mainloop when we close the
+// window.
+stage.connect("destroy", Clutter.main_quit);
+// Put some title
+stage.title = "Test";
+// Set a color to the stage to show that it is working
+stage.set_background_color(new Clutter.Color({
+    red : 150,
+    blue : 0,
+    green : 0,
+    alpha : 255
+}));
+// As we say, the stage is also an actor, so we shoe it to make visible
+stage.show();
+// Start a main loop so that the stage can animate its contents and respond to
+// user interaction.
+Clutter.main();
+}}}
+
+Save this code to a file "file.js" and to execute we enter in a terminal:
+{{{
+gjs-console file.js
+}}}
+As you see we are using gjs to execute the file, so you have to have Gjs installed
+(search for Gjs in your software management application)
+
+[[#index | Go to index]]
+
+<<Anchor(knowingClutter-someExamples-draw)>>
+=== Draw something ===
+
+Now we try to draw a rectangle in the stage
+{{{#!java
+//Import the clutter class form the gi repository(the object introspection repository)
+const Clutter = imports.gi.Clutter;
+// Initialice clutter
+Clutter.init(null);
+/*
+ * Create a stage. This function returns a new default stage, with its own
+ * window. ClutterStage is derived from the ClutterActor object so many of that
+ * object's functions are useful for the stage. For instance, call
+ * Clutter.Stage.get_default().show() to make the stage visible.
+ */
+let stage = new Clutter.Stage();
+
+// We connect the destroy event to quit from the mainloop when we close the
+// window.
+stage.connect("destroy", Clutter.main_quit);
+// Put some title
+stage.title = "Test";
+// Set a color to the stage to show that it is working
+stage.set_background_color(new Clutter.Color({
+    red : 10,
+    blue : 10,
+    green : 10,
+    alpha : 255
+}));
+
+// Create a new actor
+let actorRectangle = new Clutter.Actor();
+// Make it like a rectangle
+actorRectangle.set_size(100, 100);
+actorRectangle.set_position(100, 100);
+/*
+ * Colors are made in RGBA http://en.wikipedia.org/wiki/RGBA_color_space
+ * Basically, Red, Green, Blue, Alpha(transparency). Each factor, between 0-255
+ */
+actorRectangle.set_background_color(new Clutter.Color({
+    red : 100,
+    blue : 100,
+    green : 100,
+    alpha : 255
+}));
+
+stage.add_actor(actorRectangle);
+// As we say, the stage is also an actor, so we shoe it to make visible
+stage.show();
+// Start a main loop so that the stage can animate its contents and respond to
+// user interaction.
+Clutter.main();
+}}}
+
+[[#index | Go to index]]
+
+<<Anchor(knowingClutter-someExamples-signals)>>
+=== Add some signals to make it interactive ===
+
+Now, we do something funny. We will add a hover event to the rectangle actor, and each time
+we hover the actor, the actor will change the position randomly.
+
+{{{#!java
+//Import the clutter class form the gi repository(the object introspection repository)
+const Clutter = imports.gi.Clutter;
+
+// Initialice clutter
+Clutter.init(null);
+/*
+ * Create a stage. This function returns a new default stage, with its own
+ * window. ClutterStage is derived from the ClutterActor object so many of that
+ * object's functions are useful for the stage. For instance, call
+ * Clutter.Stage.get_default().show() to make the stage visible.
+ */
+let stage = new Clutter.Stage();
+
+// We connect the destroy event to quit from the mainloop when we close the
+// window.
+stage.connect("destroy", Clutter.main_quit);
+// Put some title
+stage.title = "Test";
+// Set a color to the stage to show that it is working
+stage.set_background_color(new Clutter.Color({
+    red : 10,
+    blue : 10,
+    green : 10,
+    alpha : 255
+}));
+
+// Create a new actor
+let
+actorRectangle = new Clutter.Actor();
+// Put his x, y size, position and background color
+actorRectangle.set_size(100, 100);
+actorRectangle.set_position(100, 100);
+actorRectangle.set_background_color(new Clutter.Color({
+    red : 100,
+    blue : 100,
+    green : 100,
+    alpha : 255
+}));
+
+// Sets actor as reactive. Reactive actors will receive events.
+actorRectangle.set_reactive(true);
+/*
+ * Connect the actor to a event. When you hover it, function in the second
+ * parameter will be called. So we are passing a reference to a function.
+ */
+actorRectangle.connect('enter-event', changeRectanglePosition);
+
+stage.add_actor(actorRectangle);
+// As we say, the stage is also an actor, so we show it to make visible
+stage.show();
+// Start a main loop so that the stage can animate its contents and respond to
+// user interaction.
+Clutter.main();
+
+function changeRectanglePosition()
+{
+    // We get the size of the stage(our window)
+    let [sizex, sizey] = stage.get_size();
+    /*
+     * Math.random return a float between 0 and 1, so we multiply by the size of
+     * the stage and we acomplish a number between 0-sizeStage
+     */
+    let newx = Math.floor(Math.random() * sizex);
+    let newy = Math.floor(Math.random() * sizey);
+    /*
+     * We can access to that because is a global variable. Also, remember that
+     * with "let" the scope is the block and with "var" the scope is all the
+     * environment. In this case,the block is all the environment We put the new
+     * random position
+     */
+    actorRectangle.set_position(newx, newy);
+}
+}}}
+
+[[#index | Go to index]]
+
+<<Anchor(knowingClutter-someExamples-animate)>>
+=== Animations ===
+
+Now, we add an animation to the actor. This animation only will start each
+time we hover the actor. So we have to put the animation inside the function
+we call when hover the actor.
+
+{{{#!java
+//Import the clutter class form the gi repository(the object introspection repository)
+const
+Clutter = imports.gi.Clutter;
+
+// Initialice clutter
+Clutter.init(null);
+/*
+ * Create a stage. This function returns a new default stage, with its own
+ * window. ClutterStage is derived from the ClutterActor object so many of that
+ * object's functions are useful for the stage. For instance, call
+ * Clutter.Stage.get_default().show() to make the stage visible.
+ */
+let stage = new Clutter.Stage();
+
+// We connect the destroy event to quit from the mainloop when we close the
+// window.
+stage.connect("destroy", Clutter.main_quit);
+// Put some title
+stage.title = "Test";
+// Set a color to the stage to show that it is working
+stage.set_background_color(new Clutter.Color({
+    red : 10,
+    blue : 10,
+    green : 10,
+    alpha : 255
+}));
+
+// Create a new actor
+let actorRectangle = new Clutter.Actor();
+// Put his x, y size, position and background color
+actorRectangle.set_size(100, 100);
+actorRectangle.set_position(100, 100);
+actorRectangle.set_background_color(new Clutter.Color({
+    red : 100,
+    blue : 100,
+    green : 100,
+    alpha : 255
+}));
+
+// Sets actor as reactive. Reactive actors will receive events.
+actorRectangle.set_reactive(true);
+/*
+ * Connect the actor to a event. When you hover it, function in the second
+ * parameter will be called. So we are passing a reference to a function.
+ */
+actorRectangle.connect('enter-event', changeRectanglePosition);
+// Add the rectangle to the stage
+stage.add_actor(actorRectangle);
+
+// As we say, the stage is also an actor, so we show it to make visible
+stage.show();
+// Start a main loop so that the stage can animate its contents and respond to
+// user interaction.
+Clutter.main();
+
+function changeRectanglePosition()
+{
+    // We get the size of the stage(our window)
+    let [sizex, sizey] = stage.get_size();
+    /*
+     * Math.random return a float between 0 and 1, so we multiply by the size of
+     * the stage and we acomplish a number between 0-sizeStage
+     */
+    let newx = Math.floor(Math.random() * sizex);
+    let newy = Math.floor(Math.random() * sizey);
+    /*
+     * We can access to that because is a global variable. Also, remember that
+     * with "let" the scope is the block and with "var" the scope is all the
+     * environment. In this case,the block is all the environment We put the new
+     * random position
+     */
+    actorRectangle.set_position(newx, newy);
+
+    /*
+     * WARNING: The next code is deprectaed since clutter 1.6, but we don't have
+     * even the easy way to animate actors in raw clutter in stable version of
+     * fedora 17, so we use deprecated code. The easy way in new code is:
+     * actorRectangle.animate(Clutter.AnimationMode.EASE_OUT_ELASTIC, 500,
+     * "scale-x", 0.5, "scale-y", 0.5, NULL); New code to animate actors:
+     * http://docs.clutter-project.org/docs/clutter/stable/clutter-Implicit-Animations.html
+     */
+
+    /*
+     * To animate an actor we need three things timeline: think about it like
+     * play, pause and stop and bar time of your videos alpha: how is made the
+     * transition, because we can made a tansition bounding, quickly at first
+     * and later slowly, etc. There are all the transitions:
+     * http://docs.clutter-project.org/docs/clutter/stable/clutter-Implicit-Animations.html#ClutterAnimationMode
+     * behaviour: what property of the actor we want to animate, scale, opacity,
+     * etc. each property has his own class, behaviourScale, behaviourOpacity,
+     * etc. all properties of behaviourScale:
+     * http://docs.clutter-project.org/docs/clutter/stable/ClutterBehaviourScale.html
+     */
+    let timeline = new Clutter.Timeline({
+        'duration' : 500
+    });
+    let alpha = new Clutter.Alpha({
+        'timeline' : timeline,
+        'mode' : Clutter.AnimationMode.EASE_OUT_ELASTIC
+    });
+    let behaviourScale = new Clutter.BehaviourScale({
+        'alpha' : alpha,
+        'x_scale_start' : 1.0,
+        'y_scale_start' : 1.0,
+        'x_scale_end' : 0.5,
+        'y_scale_end' : 0.5
+    });
+    behaviourScale.apply(actorRectangle);
+    timeline.start();
+}
+}}}
+
+<<Anchor(knowingClutter-someExamples-game)>>
+=== Game with all together ===
+
+Now we will do something funny, a (in Spanish, it is called "3 en raya") game.
+In this game we will have objects painted, events and animations.
+We need a board, two players, and two types of tokens.
+
+{{{#!java
+
+}}}
+
+<<Anchor(knowingClutter-problems)>>
+=== Problems ===
+
+''I haven't got Gjs in my software management!''
+
+Install from source:
+ * https://live.gnome.org/Gjs
+ * https://live.gnome.org/GObjectIntrospection
+ * http://www.clutter-project.org/download
+
+[[#index | Go to index]]
+
+<<Anchor(allCode)>>
+== All code to download or modify ==
+If you want all the code posted in this wiki, you can donwload using git from here
+
+https://github.com/seiryu89/StepByStepTutorial
+
+Also, if you want to modify something, fix something or add some code to the wiki, I appreciated you if you use the git repository above and change the wiki after. If we do this in this manner we can have a repository with all the code to download and everything update.
