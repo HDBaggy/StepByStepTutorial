@@ -26,23 +26,36 @@ let actorRectangle=new Clutter.Actor();
 actorRectangle.set_size(100, 100);
 actorRectangle.set_position(100, 100);
 actorRectangle.set_background_color(new Clutter.Color( {red:100, blue:100, green:100, alpha:255}));
-//That means....
+
+//Sets actor as reactive. Reactive actors will receive events.
 actorRectangle.set_reactive(true);
+/*
+ * Connect the actor to a event. When you hover it, function in the second parameter
+ * will be called. So we are passing a reference to a function.
+ */
+actorRectangle.connect('enter-event', changeRectanglePosition);
 
-actorRectangle.connect('button-press-event', changeRectanglePosition)
 stage.add_actor(actorRectangle);
-
 //As we say, the stage is also an actor, so we show it to make visible
 stage.show ();
 //Start a main loop so that the stage can animate its contents and respond to user interaction. 
 
 function changeRectanglePosition()
 {
+	//We get the size of the stage(our window)
 	let [sizex, sizey]=stage.get_size();
+	/*
+	 * Math.random return a float between 0 and 1, so we
+	 * multiply by the size of the stage and we acomplish
+	 * a number between 0-sizeStage
+	 */
 	let newx=Math.floor(Math.random()*sizex);
 	let newy=Math.floor(Math.random()*sizey);
 	/*
-	 * we can acces to that because is a global variable.
+	 * We can access to that because is a global variable.
+	 * Also, remember that with "let" the scope is the block
+	 * and with "var" the scope is all the environment.
+	 * In this case,the block is all the environment
 	 * We put the new random position
 	 */
 	actorRectangle.set_position(newx, newy);
