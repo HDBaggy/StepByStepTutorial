@@ -14,7 +14,7 @@ let stage = new Clutter.Stage();
 // window.
 stage.connect("destroy", Clutter.main_quit);
 // Put some title
-stage.title = "Test";
+stage.title = "Draw something";
 // Set a color to the stage to show that it is working
 stage.set_background_color(new Clutter.Color({
     red : 10,
