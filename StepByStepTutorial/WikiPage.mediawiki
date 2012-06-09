@@ -9,13 +9,14 @@
 [[#toReview-3]]
 [[#toReview-4]]
 [[#toReview-5]]
+[[#toReview-6]]
 
 <<Anchor(index)>>
  * [[#fromScratch | From scratch]]
    * [[#fromScratch-settingUpEclipse | Setting up eclipse]]
    * [[#fromScratch-settingUpEclipse-problems | Problems setting up eclipse]]
    * [[#fromScratch-usingEclipse|Using eclipse]]
- * [[#knowingJavascript | Knowing javascript for gnome-shell]]
+ * [[#knowingJavascript | Knowing javascript for gnome shell]]
    * [[#knowingJavascript-introducingJavascript | Introducing javascript]]
    * [[#knowingJavascript-howExtends|How extends functionality]]
  * [[#knowingClutter|Knowing clutter]]
@@ -28,7 +29,7 @@
      *[[#knowingClutter-someExamples-animate | Animations]]
      *[[#knowingClutter-someExamples-game | Game with all together]]
    * [[#knowingClutter-problems | Problems]]
- * [[#knowingGnomeShell|Knowing gnome-shell]]
+ * [[#knowingGnomeShell|Knowing gnome shell]]
    * [[#knowingGnomeShell-introducing|Introducing gnome shell]]
    * [[#knowingGnomeShell-interactionWithClutter|Interaction with clutter]]
    * [[#knowingGnomeShell-API|API]]
@@ -37,7 +38,7 @@
  * [[#errorsAndDebug | How to know your errors and debug your code]]
    * [[#errorsAndDebug-knowYourErrors|Know your errors]]
    * [[#errorsAndDebug-redirectOutput|Redirect output to error console]]
- * [[#interestingClasses | Accessing some interesting objects of gnome-shell]]
+ * [[#interestingClasses | Accessing some interesting objects of gnome shell]]
  * [[#extensionExamples | Some extensions examples]]
    * [[#extensionExamples-extensionUsingDash|Extension using dash]]
    * [[#extensionExamples-extensionUsingWindows|Extension using windows]]
@@ -205,7 +206,7 @@ We'll see why we need to desinject the code in "my first extensions" headland.
 Clutter is a C programming API that allows you to create simple but visually appealing and involving user interfaces. It offers a variety of objects (actors) which can be placed on a canvas (stage) and manipulated by the application or the user. It is therefore a "retained mode" graphics API. Unlike traditional 2D canvas APIs, Clutter allows these actors to move partly in the Z dimension.
 It is used by gnome-shell to implement all the GUI of gnome-shell.
 
-There's three tecnologies that allow us to use easily clutter with javascript:
+There's three technologies that allow us to use easily clutter with javascript:
 
 <<Anchor(toReview-5)>>
 Clutter use [[https://live.gnome.org/GObjectIntrospection | GObjectIntrospection]], project that allows to use c programs from other programming languages directly and it allows us to work in javascript with it, instead of using c. ~+It works transforming the c program API in general files(xml or custom files) allowing to write easily a binding in other program language that can interpret it.+~
@@ -1136,8 +1137,79 @@ Install from source:
 
 [[#index | Go to index]]
 
+<<Anchor(knowingGnomeShell)>>
+= Knowing gnome shell =
+
+<<Anchor(knowingGnomeShell-introducing)>>
+== Introducing gnome shell ==
+
+GNOME Shell provides core interface functions like switching windows, launching applications or see your notifications.
+So gnome shell is "what you see and what you use" to open applications, changing between windows, move between workspaces, see notifications, etc.
+Gnome shell is made 50% in c 50% in javascript. You only have to touch the javascript code, because is the code that you can modify for your extension. Maybe, with the pass of the time, the percentage of c code will decrease.
+Gnome shell manage the workspace, notifications, windows(how is managed, not the rendering(which is managed by Mutter)), dash, top bar, and lacunh applications.
+It uses GPU acceleration. The rendering of the interface is managed by clutter, so gnome shell doesn't touch graphics.
+Also, gnome shell doesn't touch css, this is managed by St.
+
+Gnome shell has these parts:
+
+{{attachment:gnomeShellParts.png}}
+
+{{attachment:gnomeShellOverviewParts.png}}
+
+<<Anchor(toReview-5)>>
+Also, when programming a extension, if you modify the code ~+you have to restart gnome shell+~. To do this pres ALT+F2 and put "r" and enter
+
+Sometimes gnome shell crash because your extension touch something wrong. To return to normally, press CTRL+ALT+F2 and put 
+
+{{{
+DISPLAY=:0 gnome-shell
+}}}
+and press enter.
+Then press CTRL+ALT+F7 or CTRL+ALT+F8 and you will go to a new gnome-shell interface.
+Note: if something crash you can go again to CTRL+ALT+F2 and see the error, and do the same to start a new gnome shell.
+Also, maybe gnome shell doesn't crash but is inresponsible.
+To fix it, press CTRL+ALT+F2 and then
+{{{
+ps -e | grep gnome-shell
+}}}
+with this list all the proccess that have gnome-shell in the name.
+Then, you see a number, called PID, and at the rigth gnome-shell. So, get this PID and
+{{{
+kill -9 "the PID that you get above"
+}}}
+With this you stop the procces you wrote with his PID.
+
+An example:
+{{{
+carlos@carlos-pc-fedora ~$ ps -e | grep gnome-shell
+ 1174 ?        00:18:29 gnome-shell
+ 1276 ?        00:00:00 gnome-shell-cal
+carlos@carlos-pc-fedora ~$ kill -9 1174
+}}}
+
+[[#index | Go to index]]
+
+<<Anchor(knowingGnomeShell-interactionWithClutter)>>
+== Interaction with clutter ==
+
+How gnome shell interact with clutter?
+Basically gnome shell define a lot of actors. As we saw above, each object in the GUI, like the "top bar", the "message tray", etc are actors.
+So gnome shell implements his behaviour. I mean, gnome shell define how the actors have to move, how to interact with the mouse, how to interact with other actors, etc. This is the main function of gnome shell. So the interaction with clutter is by the actors and all of his functions, behaviours, animations etc.
+
+[[#index | Go to index]]
+
+<<Anchor(knowingGnomeShell-API)>>
+== API ==
+
+Apuf....this is very difficult, because of the lack of documentation...So the best way is to see the code (Yes, the best way...the only way!).
+To make you more easy this step, we did a diagram explaining wich classes have what objects and we will explain you in overview each interesting component.
+
+This is the diagram:
+
+{{gnomeShellDiagram.png}}
+
 <<Anchor(allCode)>>
-== All code to download or modify ==
+= All code to download or modify =
 If you want all the code posted in this wiki, you can donwload using git from here
 
 https://github.com/seiryu89/StepByStepTutorial
