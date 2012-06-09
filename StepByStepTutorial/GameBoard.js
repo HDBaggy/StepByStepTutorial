@@ -1,24 +1,24 @@
 /*
- * Code from http://townx.org/blog/elliot/introduction-sorts-javascript-desktop-application-development-gjs-and-clutter
- * Commented and update to clutter 1.10 by Carlos Soriano
+    Code from http://townx.org/blog/elliot/introduction-sorts-javascript-desktop-application-development-gjs-and-clutter
+    Commented and update to clutter 1.10 by Carlos Soriano
  */
 
 /*
- * Define what is a square in the game
- * We use this way to define a class,
- * using the prototype.
- * @see <a href="http://www.phpied.com/3-ways-to-define-a-javascript-class/"> Ways to define a "class" in JS
+    Define what is a square in the game
+    We use this way to define a class,
+    using the prototype.
+    Visit <Ways to define a "class" in JS at http://www.phpied.com/3-ways-to-define-a-javascript-class>
  */
 
-/**
- * Class to define a square to play in the board This "class" use the method
- * prototype to do define a "class" in javascript</a>
- * 
- * @constructor
- * @param {Integer}
- *                x - position x of the square. For normal use, 0 to 2
- * @param {Integer}
- *                y - position y of the square. for normal use, 0 to 2
+/*
+  Class: Square
+
+  Define a square to play in the board This "class" use the method
+  prototype to do define a "class" in javascript
+
+  Parameters:
+       x - position x of the square. For normal use, 0 to 2
+       y - position y of the square. for normal use, 0 to 2
  */
 function Square(x, y, player) {
     this.player = player;
@@ -45,10 +45,10 @@ Square.prototype = {
 };
 
 
-/**
- * Class to define the line drawn when some player won
- * 
- * @constructor
+/*
+  Class: Line
+
+       Class to define the line drawn when some player won
  */
 function Line () {
     this.squares = [];
@@ -89,12 +89,15 @@ Line.prototype = {
         }
 };
 
-/**
- * Class to definethe board of the game
- * 
- * @constructor
- * @param {Integer} players - The count of the players
- * @param {Integer} sideSize - The quantity of squares can have the board in a side
+/*
+  Class: Board
+
+        Define the board of the game
+
+  Parameters:
+
+        players - The count of the players
+        sideSize - The quantity of squares can have the board in a side
  */
 
 function Board(players, sideSize) {
