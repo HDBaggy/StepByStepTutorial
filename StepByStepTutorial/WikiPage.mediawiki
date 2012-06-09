@@ -614,7 +614,7 @@ It suposed that you already has read the previous headlands about clutter.
 
 We need two classes, GameBoard, that define the program behaviour and data and Gameosx that define the GUI with clutter.
 
-The code is documented with [[http://code.google.com/p/jsdoc-toolkit/ | JSDoc]]. You can document the code and generate a html documentation, that it is very helpful. Also, remember that document the code is very important, and if you can do
+The code is documented with [[http://www.naturaldocs.org | Natural docs]]. You can document the code and generate a html documentation, that it is very helpful. Also, remember that document the code is very important, and if you can do
 a html documentation, it is very useful.
 
 Class GameBoard:
