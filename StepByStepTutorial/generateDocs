@@ -1,0 +1,3 @@
+NaturalDocs -i /home/carlos/git/StepByStepTutorial/StepByStepTutorial
+            -o FramedHTML /home/carlos/git/StepByStepTutorial/StepByStepTutorial/Docs
+            -p /home/carlos/git/StepByStepTutorial/StepByStepTutorial/NaturalDocsConfig
