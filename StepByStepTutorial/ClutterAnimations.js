@@ -2,7 +2,7 @@
 const
 Clutter = imports.gi.Clutter;
 
-// Initialice clutter
+// Initialize clutter
 Clutter.init(null);
 /*
  * Create a stage. This function returns a new default stage, with its own
@@ -16,7 +16,7 @@ let stage = new Clutter.Stage();
 // window.
 stage.connect("destroy", Clutter.main_quit);
 // Put some title
-stage.title = "Test";
+stage.title = "Animation";
 // Set a color to the stage to show that it is working
 stage.set_background_color(new Clutter.Color({
     red : 10,

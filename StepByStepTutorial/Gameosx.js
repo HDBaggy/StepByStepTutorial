@@ -14,10 +14,10 @@
 
 //import local file - NB this means the script only works from this directory at the moment
 imports.searchPath.push('.');
-const Ox = imports.board;
-// Import clutter from gi repository (GObjectintrospection)
+const Ox = imports.GameBoard;
+//Import clutter from gi repository (GObjectintrospection)
 const Clutter = imports.gi.Clutter;
-// This class help you to enclosure the "this"
+//This class help you to enclosure the "this"
 const Lang = imports.lang;
 
 const OX_PLAYERS = ["X", "O"];
@@ -33,10 +33,8 @@ const OX_STRIKE_COLOR = new Clutter.Color( {'red':255, 'blue':0, 'green':0, 'alp
  * program. There is where Clutter have the action
  * 
  * @constructor
- * @param {Integer}
- *                players - number of players
- * @param {Integer}
- *                sideSize - number of squares to play
+ * @param {Integer} players - number of players
+ * @param {Integer} sideSize - number of squares to play
  */
 function BoardView(players, sideSize) {
     this._init(players, sideSize);
@@ -55,6 +53,10 @@ BoardView.prototype = {
             Clutter.init (null);
             // Create new stage for our window and our actors
             this.stage = new Clutter.Stage();
+            // We connect the destroy event to quit from the mainloop when we close the
+            // window.
+            this.stage.connect("destroy", Clutter.main_quit);
+            //Set the title
             this.stage.title = "3 en raya";
             // The size of the visual board
             this.stage.set_size(this.boardSizePx, this.boardSizePx);
@@ -77,7 +79,7 @@ BoardView.prototype = {
 
                     let squareActor = new Clutter.Actor();
                     squareActor.set_size(OX_SQUARE_SIZE_PX, OX_SQUARE_SIZE_PX);
-                    squareActor.set_color(colorOfSquare);
+                    squareActor.set_background_color(colorOfSquare);
                     squareActor.set_position(xpos, ypos);
                     /*
                      * We make the actor reactive, because we want to make the
@@ -194,16 +196,16 @@ BoardView.prototype = {
                     rotate = -45;
                 }
             }
-            // Creaate a new rectangle to draw a line
+            // Create a new rectangle to draw a line
             let strike = new Clutter.Actor ();
-            strike.set_color (OX_STRIKE_COLOR);
+            strike.set_background_color (OX_STRIKE_COLOR);
             strike.set_position (x, y);
             strike.set_size (width, height);
 
             /*
              * If the line is in diagonal, we have to rotate the actor. To
              * rotate it we have to indicate the axis to rotate and the center
-             * of the rotation. The axis will be z (torugth the screen), and the
+             * of the rotation. The axis will be z (trougth the screen), and the
              * center of rotation will be the center of the square actor. The
              * last 0 is the depth, that as you can imagine, it haven't got
              * depth.
@@ -224,7 +226,7 @@ BoardView.prototype = {
             //Put the letter associated with this player("X" or "O") in a text actor of clutter
             let letterToDraw = new Clutter.Text( {"text":player, "color":OX_TEXT_COLOR} );
             //Set the font, and size of the text
-            t.set_font_name("Sans Bold " + OX_FONT_SIZE + "px");
+            letterToDraw.set_font_name("Sans Bold " + OX_FONT_SIZE + "px");
             //Get the position of the rectangle
             let [r_x, r_y] = clickedSquare.get_position();
             let offset_x = (clickedSquare.get_width() / 2) - (letterToDraw.get_width() / 2); 
@@ -234,23 +236,43 @@ BoardView.prototype = {
             letterToDraw.move_anchor_point_from_gravity (Clutter.Gravity.CENTER);
 
             this.stage.add_actor(letterToDraw);
-            //TODO : use animate instead
+            /*
+             * WARNING: The next code is deprecated. Instead of this we have to use a simple
+             * code. The code of the new version will be:
+             *  actorRectangle.animate(Clutter.AnimationMode.EASE_OUT_ELASTIC, 500,
+             * "scale-x", 0.5, "scale-y", 0.5, NULL);
+             */
+
+            /*
+             * Create a new timeline as we see in the animation headland(its function it's like the time bar of youtube
+             *  videos) with duration 500ms
+             */
             let timeline = new Clutter.Timeline( {'duration':500} );
+            /*
+             * Create a new function to control the timeline and the properties of the actor.
+             * This will use the ease out elastic type of animation, resulting in a animation that cause the letter
+             * seems an elastic thing
+             */
             let alpha = new Clutter.Alpha ( {'timeline':timeline, 'mode':Clutter.AnimationMode.EASE_OUT_ELASTIC} );
-            let behave = new Clutter.BehaviourScale( {'alpha':alpha, 'x_scale_start':1.0, 'y_scale_start':1.0, 
+            //Create a new behaviour to the actor. We want that the actor scale to 0.5 of its size.
+            let behaviour = new Clutter.BehaviourScale( {'alpha':alpha, 'x_scale_start':1.0, 'y_scale_start':1.0, 
                 'x_scale_end':0.5, 'y_scale_end':0.5} );
-            behave.apply (t);
+            //Apply the behaviour to the letter actor
+            behaviour.apply (letterToDraw);
+            //Start the animation
             timeline.start ();
         },
 
         show : function()
         {
+            //Show the stage and his actors
             this.stage.show();
+            //Start our program with the GUI we created
             Clutter.main();
-            this.stage.destroy();
         }
 };
 
-
+//Create our GUI
 let view = new BoardView(OX_PLAYERS, OX_SIDE_SIZE);
+//Start our GUI
 view.show();

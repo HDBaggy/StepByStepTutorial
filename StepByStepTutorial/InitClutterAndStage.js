@@ -1,6 +1,6 @@
 //Import the clutter class form the gi repository(the object introspection repository)
 const Clutter = imports.gi.Clutter;
-// Initialice clutter
+// Initialize clutter
 Clutter.init(null);
 /*
  * Create a stage. This function returns a new default stage, with its own

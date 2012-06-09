@@ -93,11 +93,8 @@ Line.prototype = {
  * Class to definethe board of the game
  * 
  * @constructor
- * @param {Integer}
- *                players - The count of the players
- * @param {Integer}
- *                sideSize - The quantity of squares can have the board in a
- *                side
+ * @param {Integer} players - The count of the players
+ * @param {Integer} sideSize - The quantity of squares can have the board in a side
  */
 
 function Board(players, sideSize) {
