@@ -10,6 +10,7 @@
 [[#toReview-4]]
 [[#toReview-5]]
 [[#toReview-6]]
+[[#toReview-7]]
 
 <<Anchor(index)>>
  * [[#fromScratch | From scratch]]
@@ -21,7 +22,7 @@
    * [[#knowingJavascript-howExtends|How extends functionality]]
  * [[#knowingClutter|Knowing clutter]]
    * [[#knowingClutter-introducingClutter|Introducing clutter]]
-   * [[#knowingClutter-signals|Signals]]
+   * [[#knowingClutter-events | Events]]
    * [[#knowingClutter-someExamples|Some examples with raw clutter]]
      *[[#knowingClutter-someExamples-init | Init clutter and stage]]
      *[[#knowingClutter-someExamples-draw | Draw something]]
@@ -87,7 +88,7 @@ After that, each change yo do you have to save the file and restart the shell (A
 [[#index | Go to index]]
 
 <<Anchor(knowingJavascript)>>
-= Knowing javascript for gnome-shell =
+= Knowing javascript for gnome shell =
 
 <<Anchor(knowingJavascript-introducingJavascript)>>
 == Introducing javascript ==
@@ -95,17 +96,17 @@ JavaScript (sometimes abbreviated JS) is a prototype-based scripting language th
 
 Gnome-shell is written in javascript because it allows a quick prototyping. It means that it allows to change the code quickly, and do a lot of changes in a easy way. It is needed because gnome-shell is a application that is in a quick development, and it changes a lot in short time.
 <<Anchor(toReview-1)>>
-The diference between javascript and other dynamic languages (python, ruby, php, etc...) is that javascript doesn't depends in a specific platform, so ~+gnome-shell can run it without any platform under it +~.
+The diference between javascript and other dynamic languages (python, ruby, php, etc...) is that javascript doesn't depends in a specific platform, so '''~+gnome-shell can run it without any platform under it +~'''.
 
 This is an extended web page about programming in javascript (web oriented). Some things changes because we are not programming for the web, but most is the same. There's the web:
 https://developer.mozilla.org/en-US/learn/javascript
 
 Quick characteristic things:
 <<Anchor(toReview-2)>>
- * ~+ Classes, objects, variables, functions is less or more the same. +~
+ * '''~+ Classes, objects, variables, functions is less or more the same. +~'''
  * To access some function or variable: object.function() / object.variable or object.function() / object['function']()
 <<Anchor(toReview-3)>>
- * ~+ You can modify the code while running +~
+ * '''~+ You can modify the code while running +~'''
  * class.prototype allow you inheritance or modify the base class directly rewriting his code.
  * Variables without scope. So, if you do "var x", x will be in all of your program. The only way to restrict the scope is "let x" that make the variable x only usable in his scope.
  * If we want to use "this" outside of his scope we need the class Lang. The use is in this way: functionOutsideOfScope(Lang.bind(this, this.function())). See https://live.gnome.org/GnomeShell/Gjs_StyleGuide ""this" in closures" to see one example.
@@ -117,7 +118,7 @@ Quick characteristic things:
 
 '' Don't do anything until we arrive to the extensions headland, because you don't know how to create, enable and some importants parts of an extension''
 
-The main way to extend functionality is rewritten the code of the gnome-shell in this way:
+The main way to extend functionality is rewritten the code of the gnome shell in this way:
 We have a class called Workspace (File: /usr/share/gnome-shell/js/ui/Workspace. The class is something like this:
 {{{#!java
 const Workspace = new Lang.Class({
@@ -191,7 +192,7 @@ removeInjection(Workspace.prototype, injections,  'injectionOfLookupIndex');
 }}}
 
 <<Anchor(toReview-4)>>
-With this, we can add some code to the function without rewriting all the function. Our code is write ~+ before the return statement of the original function and after all code of original function+~
+With this, we can add some code to the function without rewriting all the function. Our code is write '''~+ before the return statement of the original function and after all code of original function+~'''
 
 We'll see why we need to desinject the code in "my first extensions" headland.
 
@@ -209,7 +210,7 @@ It is used by gnome-shell to implement all the GUI of gnome-shell.
 There's three technologies that allow us to use easily clutter with javascript:
 
 <<Anchor(toReview-5)>>
-Clutter use [[https://live.gnome.org/GObjectIntrospection | GObjectIntrospection]], project that allows to use c programs from other programming languages directly and it allows us to work in javascript with it, instead of using c. ~+It works transforming the c program API in general files(xml or custom files) allowing to write easily a binding in other program language that can interpret it.+~
+Clutter use [[https://live.gnome.org/GObjectIntrospection | GObjectIntrospection]], project that allows to use c programs from other programming languages directly and it allows us to work in javascript with it, instead of using c. '''~+It works transforming the c program API in general files(xml or custom files) allowing to write easily a binding in other program language that can interpret it.+~'''
 
 From that, we need a program that get the general file result from GObjectIntrospection and transform it to a specific program language, like javascript. This program is specific for each program language, an for javascript it is called [[https://live.gnome.org/Gjs | Gjs]].
 
@@ -239,7 +240,7 @@ Important characteristic things in clutter is:
 == Events ==
 
 We need events to do the GUI interactive and reactive to mouse clicks and keyboard inputs.
-also, we can use custom events inside our program, to communicate by events functions in our program.
+Also, we can use custom events inside our program, to communicate by events functions in our program.
 
 By default, each actor in clutter has these events:
  * button-press-event: Emitted when the user presses the mouse over the actor.
@@ -476,7 +477,7 @@ function changeRectanglePosition()
 }
 }}}
 
-Save this code to a file "ClutterEvents.js" and to execute we enter in a terminal:
+Save this code to a file "!ClutterEvents.js" and to execute we enter in a terminal:
 {{{
 gjs-console ClutterEvents.js
 }}}
@@ -1153,14 +1154,15 @@ Gnome shell manage the workspace, notifications, windows(how is managed, not the
 It uses GPU acceleration. The rendering of the interface is managed by clutter, so gnome shell doesn't touch graphics.
 Also, gnome shell doesn't touch css, this is managed by St.
 And, the last thing you have to know is that gnome shell, currently, is not using the animation framework of clutter(because when gnome shell was did the animation framework in clutter was not present), instead, clutter use [[http://hosted.zeh.com.br/tweener/docs/en-us/ | Tweener]]. We'll see an example of tweener in [[#myFirstExtension | My first extension]] headland.
+
 Gnome shell has these parts:
 
 {{attachment:gnomeShellParts.png}}
 
 {{attachment:gnomeShellOverviewParts.png}}
 
-<<Anchor(toReview-5)>>
-Also, when programming a extension, if you modify the code ~+you have to restart gnome shell+~. To do this pres ALT+F2 and put "r" and enter
+<<Anchor(toReview-6)>>
+Also, when programming a extension, if you modify the code '''~+you have to restart gnome shell+~'''. To do this pres ALT+F2 and put "r" and enter
 
 Sometimes gnome shell crash because your extension touch something wrong. To return to normally, press CTRL+ALT+F2 and put 
 
@@ -1203,7 +1205,7 @@ carlos@carlos-pc-fedora ~$ kill -9 1174
 
 How gnome shell interact with clutter?
 Basically gnome shell define a lot of actors. As we saw above, each object in the GUI, like the "top bar", the "message tray", etc are actors.
-So gnome shell implements his behaviour. I mean, gnome shell define how the actors have to move, how to interact with the mouse, how to interact with other actors, etc. This is the main function of gnome shell. So the interaction with clutter is by the actors and all of its functions, behaviours, animations etc.
+So gnome shell implements its behaviour. I mean, gnome shell define how the actors have to move, how to interact with the mouse, how to interact with other actors, etc. This is the main function of gnome shell. So the interaction with clutter is by the actors and all of its functions, behaviours, animations etc.
 
 [[#index | Go to index]]
 
@@ -1219,8 +1221,23 @@ After coffe, now see the diagram:
 
 {{attachment:gnomeShellDiagram.bmp}}
 
+To understand the diagrama, think that this is a "contingency" diagram, I mean, it show you the imports of each file. So, if Main imports Overview,
+is because Main will use Overview.
+
+It's a hierachical diagram, so we have level 0 with Main, level 1,...level 6. The level 0 is Main, wich is a file and also a class inside the file, so if we see the Main.js file we will see that it contains a class, called Main.
+
+Also, Main imports Overview.js, Panel.js....etc. Each of these files contains some classes, but, the most of these files, contains a class named equal as the file. So we have Overview.js and inside we have Overview class and ShellInfo class.
+
+In the most cases, the class that imports some file use the class named equal as the file imported. So, for example, Main imports Overview.js and Main uses and preserve an object from the class Overview (wich is defined in Overview.js file). So, we have Main.overview as an instance.
+
+Normally, the attributes of a imported class is preserved as the name of the class in lower case, or, if the attribute is private, with an underscore. For example, we have Main.overview._dash.
+
+In the diagram, the exemple above will be Main->Overview(file)->Overview(class) wich the instance is preserved in Main as "overview" -> Dash(file) -> Dash(class) wich the instance is preserved in overview as _dash.
+
+As you can see, the most attributes of some class is the main class of a file (called equal to the file) uderscored or lower cased.
+
 Now, we we'll see a brief explanation of each level, group, class, etc.
-I will put in bold the objects and libraries I consider most frequently used when we do an extension.
+I will put in bold the objects and libraries I consider most frequently used when we do an extension and in violet colour in the diagram. So I recommend you to only see these now, and after doind some extension example, you can go back here and see the other classes, wich are very interesting and defines very useful things of the entire gnome platform.
 
 === First level ===
 
@@ -1228,9 +1245,10 @@ I will put in bold the objects and libraries I consider most frequently used whe
   This is the main objects we will touch and rewritte to make our extension
   * '''Overview''': This object have all we see normally when we are in the "Activities" headland. So, it has  the dash, the workspaces, the window actors, the search bar, the display apps, etc.
   * '''Panel''': The top bar.
-  * !CtrlAltTab: Implements the UI of the ctrl+alt+tab function.
   * '''!MessageTray''': Is the bottom bar where the notifications are showed.
-  * Layout: This manages the shell "chrome"; the UI that's visible in the normal mode (ie, outside the Overview), that surrounds the main workspace content. 
+  * !CtrlAltTab: Implements the UI of the ctrl+alt+tab function.  
+  * Layout: This manages the shell "chrome"; the UI that's visible in the normal mode (ie, outside the Overview), that surrounds the main workspace content.
+  * MessageTray: It is the Messsage tray part we saw before in images.
 
  * C libraries
   All of these are libraries written in c. We doesn't rewritte these libraries to implement an extension. The main library we will probably use is St.
@@ -1244,6 +1262,40 @@ I will put in bold the objects and libraries I consider most frequently used whe
   * GDK: An intermediate layer which isolates GTK+ from the details of the windowing system.
   * Clutter: What's this?? It's not familiar to me... :P Remember that it is write in c, but it use GObjectIntrpospection, so we can use clutter directly in javascript(or other programming languages that support GObjectIntrospection) as we saw in [[#knowingClutter-introducingClutter | Knowing clutter]]
 
+ * General utils
+ Some util classes that gnome shell usee.
+  * Magnifier: It is a accessibility tool, that allow to deficient users to see the desktop with zoom
+  * TelephatyClient: Manage the chat, IRC, videocalls, audicalls, etc. in gnome shell interface. So, when some person talk us and we see the chat in the message tray, it is because telepathy client are doing his work.
+  * LookingGlass: Tool for helo developers developing gnome shell and gnome shell extensions.
+  * PlaceDisplay: Represents a place object, which is most normally a bookmark entry, a mount/volume, or a special place like the Home Folder, Computer, and Network.
+  * Keyboard: Manage and define the keyboard events, etc. for gnome shell.
+  
+ * UIManagersAndHandlers
+  * XdndHandler: Handle the drag and drop (DND) function of gnome shell.
+  * WindowManager: Manage the windows behaviour in gnome shell, like wich window is in the top stack of showing, the dimm of one window, etc.
+  
+ * Prompts
+ Contains all the prompts you see in gnome shell, like when you try to install some applicaton (PolkitAutheticantionPromt) or when you connect some mass storage device to computer and a prompt telling you what to do shown.
+  * RunDialog: This is the dialog shown when you press Alt+F2.
+  * NotificationDaemon: Manage all notifications. It is a class under TelephatyClient, etc. Telephaty client send him some data, and the NotificationDaemon filter it and acts accordingly.
+  * EndSessionDialog: The prompt shown when you click on "power off" or "log out"
+  * KeyringPrompt: It is the prompt shown when the system ask you about a password, like when you connect to a new wifi channel.
+ 
+ * Util not touch
+ I called this group as "util not touch" because it agrouped some classes that, in principle, you won't change to do an extension.
+ I said in princyple, because you can change whatever you want (If the extensions validators people are agree)
+ <<Anchor(toReview-7)>>
+  * ShellDBus: '''~+ This is an abstracition layer that allows other applications to interact with shell. For example, when you install or uninstall an extension by extensions.gnome.org, this class is called.+~'''
+  * Environment: Initialize some variables for gnome shell environment, like Tweener.
+  * NetworkAgent: Manage network (wifi, wire, bluethoot) interface.
+  * StatusIconDispatcher: Dispatche icons for the status bar
+  * Scripting:  This module provides functionality for driving the shell user interface in an automated fashion. The primary current use case for this is automated performance testing, but it could be applied to other forms of automation, such as testing for correctness as well.
+  * WindowAttentionHandler: Manage the "x is ready" dialog you got when you click to run some application and other things like this. It define when a window is requesting attention from the user.
+  * ExtensionSystem: Manage the extensions
+  * PolkitAuthenticationAgent: Manage the authentication for administrator actions, like when you install an application.
+  * AutorunManager: Manage the autorun function, like when you insert some device in the computer and a dialog asking what to do shown.
+  * AutomounManager: Manage the automount of devices, like when you insert a USB stick and it is mounted automatically.
+  
 <<Anchor(allCode)>>
 = All code to download or modify =
 If you want all the code posted in this wiki, you can donwload using git from here
