@@ -12,6 +12,9 @@
 [[#toReview-6]]
 [[#toReview-7]]
 
+
+= Index =
+
 <<Anchor(index)>>
  * [[#fromScratch | From scratch]]
    * [[#fromScratch-settingUpEclipse | Setting up eclipse]]
@@ -1242,15 +1245,16 @@ I will put in bold the objects and libraries I consider most frequently used whe
 === First level ===
 
  * MainUI
+ 
   This is the main objects we will touch and rewritte to make our extension
   * '''Overview''': This object have all we see normally when we are in the "Activities" headland. So, it has  the dash, the workspaces, the window actors, the search bar, the display apps, etc.
   * '''Panel''': The top bar.
   * '''!MessageTray''': Is the bottom bar where the notifications are showed.
   * !CtrlAltTab: Implements the UI of the ctrl+alt+tab function.  
   * Layout: This manages the shell "chrome"; the UI that's visible in the normal mode (ie, outside the Overview), that surrounds the main workspace content.
-  * MessageTray: It is the Messsage tray part we saw before in images.
 
  * C libraries
+ 
   All of these are libraries written in c. We doesn't rewritte these libraries to implement an extension. The main library we will probably use is St.
   * '''St''': This is the only library will be use for the GUI. It is made in c, using clutter. Manage the css theme of gnome shell and
   implements useful actors like buttons, text prompts, etc.
@@ -1263,42 +1267,45 @@ I will put in bold the objects and libraries I consider most frequently used whe
   * Clutter: What's this?? It's not familiar to me... :P Remember that it is write in c, but it use GObjectIntrpospection, so we can use clutter directly in javascript(or other programming languages that support GObjectIntrospection) as we saw in [[#knowingClutter-introducingClutter | Knowing clutter]]
 
  * General utils
- Some util classes that gnome shell usee.
+ 
+  Some util classes that gnome shell usee.
   * Magnifier: It is a accessibility tool, that allow to deficient users to see the desktop with zoom
-  * TelephatyClient: Manage the chat, IRC, videocalls, audicalls, etc. in gnome shell interface. So, when some person talk us and we see the chat in the message tray, it is because telepathy client are doing his work.
-  * LookingGlass: Tool for helo developers developing gnome shell and gnome shell extensions.
-  * PlaceDisplay: Represents a place object, which is most normally a bookmark entry, a mount/volume, or a special place like the Home Folder, Computer, and Network.
+  * !TelephatyClient: Manage the chat, IRC, videocalls, audicalls, etc. in gnome shell interface. So, when some person talk us and we see the chat in the message tray, it is because telepathy client are doing his work.
+  * !LookingGlass: Tool for helo developers developing gnome shell and gnome shell extensions.
+  * !PlaceDisplay: Represents a place object, which is most normally a bookmark entry, a mount/volume, or a special place like the Home Folder, Computer, and Network.
   * Keyboard: Manage and define the keyboard events, etc. for gnome shell.
   
  * UIManagersAndHandlers
-  * XdndHandler: Handle the drag and drop (DND) function of gnome shell.
-  * WindowManager: Manage the windows behaviour in gnome shell, like wich window is in the top stack of showing, the dimm of one window, etc.
+  * !XdndHandler: Handle the drag and drop (DND) function of gnome shell.
+  * !WindowManager: Manage the windows behaviour in gnome shell, like wich window is in the top stack of showing, the dimm of one window, etc.
   
  * Prompts
- Contains all the prompts you see in gnome shell, like when you try to install some applicaton (PolkitAutheticantionPromt) or when you connect some mass storage device to computer and a prompt telling you what to do shown.
-  * RunDialog: This is the dialog shown when you press Alt+F2.
-  * NotificationDaemon: Manage all notifications. It is a class under TelephatyClient, etc. Telephaty client send him some data, and the NotificationDaemon filter it and acts accordingly.
-  * EndSessionDialog: The prompt shown when you click on "power off" or "log out"
-  * KeyringPrompt: It is the prompt shown when the system ask you about a password, like when you connect to a new wifi channel.
+ 
+  Contains all the prompts you see in gnome shell, like when you try to install some applicaton (!PolkitAutheticantionPromt) or when you connect some mass storage device to computer and a prompt telling you what to do is shown.
+  * !RunDialog: This is the dialog shown when you press Alt+F2.
+  * !NotificationDaemon: Manage all notifications. It is a class under !TelephatyClient, etc. Telephaty client send him some data, and the !NotificationDaemon filter it and acts accordingly.
+  * !EndSessionDialog: The prompt shown when you click on "power off" or "log out"
+  * !KeyringPrompt: It is the prompt shown when the system ask you about a password, like when you connect to a new wifi channel.
  
  * Util not touch
- I called this group as "util not touch" because it agrouped some classes that, in principle, you won't change to do an extension.
- I said in princyple, because you can change whatever you want (If the extensions validators people are agree)
+ 
+  I called this group as "util not touch" because it agrouped some classes that, in principle, you won't change to do an extension.
+  I said in princyple, because you can change whatever you want (If the extensions validators people are agree)
  <<Anchor(toReview-7)>>
   * ShellDBus: '''~+ This is an abstracition layer that allows other applications to interact with shell. For example, when you install or uninstall an extension by extensions.gnome.org, this class is called.+~'''
   * Environment: Initialize some variables for gnome shell environment, like Tweener.
-  * NetworkAgent: Manage network (wifi, wire, bluethoot) interface.
-  * StatusIconDispatcher: Dispatche icons for the status bar
+  * !NetworkAgent: Manage network (wifi, wire, bluethoot) interface.
+  * !StatusIconDispatcher: Dispatche icons for the status bar
   * Scripting:  This module provides functionality for driving the shell user interface in an automated fashion. The primary current use case for this is automated performance testing, but it could be applied to other forms of automation, such as testing for correctness as well.
-  * WindowAttentionHandler: Manage the "x is ready" dialog you got when you click to run some application and other things like this. It define when a window is requesting attention from the user.
-  * ExtensionSystem: Manage the extensions
-  * PolkitAuthenticationAgent: Manage the authentication for administrator actions, like when you install an application.
-  * AutorunManager: Manage the autorun function, like when you insert some device in the computer and a dialog asking what to do shown.
-  * AutomounManager: Manage the automount of devices, like when you insert a USB stick and it is mounted automatically.
+  * !WindowAttentionHandler: Manage the "x is ready" dialog you got when you click to run some application and other things like this. It define when a window is requesting attention from the user.
+  * !ExtensionSystem: Manage the extensions
+  * !PolkitAuthenticationAgent: Manage the authentication for administrator actions, like when you install an application.
+  * !AutorunManager: Manage the autorun function, like when you insert some device in the computer and a dialog asking what to do shown.
+  * !AutomounManager: Manage the automount of devices, like when you insert a USB stick and it is mounted automatically.
   
 <<Anchor(allCode)>>
 = All code to download or modify =
-If you want all the code posted in this wiki, you can donwload using git from here
+If you want all the code. images, and the wiki code posted in this wiki, you can donwload using git from here
 
 https://github.com/seiryu89/StepByStepTutorial
 
