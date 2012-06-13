@@ -72,7 +72,8 @@ Install eclipse from your app store of your distribution. Open eclipse and selec
 <<Anchor(fromScratch-settingUpEclipse-problems)>>
 === Problems ===
 
-I haven't got eclipse in my distribution
+''I haven't got eclipse in my distribution''
+
 Go to http://www.eclipse.org/downloads/ and download eclipse classic.
 I select work with "All avaiable sites" but nothing is shown
 Go to "Find more software by working with "All available software sites" preferences" and add your eclipse download site, that it depens on the eclipse version you have. For eclipse Juno it is http://download.eclipse.org/releases/juno
@@ -122,6 +123,7 @@ Quick characteristic things:
 '' Don't do anything until we arrive to the extensions headland, because you don't know how to create, enable and some importants parts of an extension''
 
 The main way to extend functionality is rewritten the code of the gnome shell in this way:
+
 We have a class called Workspace (File: /usr/share/gnome-shell/js/ui/Workspace. The class is something like this:
 {{{#!java
 const Workspace = new Lang.Class({
@@ -150,7 +152,7 @@ And we want to modify the _lookupIndex to return always 1. So we do this in our 
 Workspace.prototype['_lookupIndex'] = function (metaWindow){ return 1; }
 }}}
 
-As we saw in the Javascript attachment paper, we can modify the base class editting his "prototype". To access some function, object, variable, etc. we put the name of the function/variable/object/etc bracketed in a string format. In the right side of equal, we write our function that we want to replace the function of the left side.
+As we saw in the javascript tutorial, we can modify the base class editting his "prototype". To access some function, object, variable, etc. we put the name of the function/variable/object/etc bracketed in a string format. In the right side of equal, we write our function that we want to replace the function of the left side.
 
 After enabling our extension and restarting the shell, if we execute the Workspace._lookupIndex function, we get always 1 in return value.
 
@@ -1242,22 +1244,41 @@ As you can see, the most attributes of some class is the main class of a file (c
 Now, we we'll see a brief explanation of each level, group, class, etc.
 I will put in bold the objects and libraries I consider most frequently used when we do an extension and in violet colour in the diagram. So I recommend you to only see these now, and after doind some extension example, you can go back here and see the other classes, wich are very interesting and defines very useful things of the entire gnome platform.
 
-=== First level ===
+=== Class explanation ===
 
- * MainUI
- 
+ * MainUI 
   This is the main objects we will touch and rewritte to make our extension
   * '''Overview''': This object have all we see normally when we are in the "Activities" headland. So, it has  the dash, the workspaces, the window actors, the search bar, the display apps, etc.
+   * Dash: This is the bar that you have at the left in overview.
+   * !WorkspaceView: This class manage all workspaces, it means, the workspaces at the rigth and also the windows running. So if we want to change how the windows are shown in the overview(i.e. order the windows like KDE or Mac) we have to look into this.
+   * !ViewSelector: This is the selector for "Windows" and "Applications" tabs.
+   * !AppDisplay: This is the selector of all aps when you click "Applications" in the ViewSelector
   * '''Panel''': The top bar.
-  * '''!MessageTray''': Is the bottom bar where the notifications are showed.
+  * '''!MessageTray''': Is the bottom bar where the notifications are shown.
   * !CtrlAltTab: Implements the UI of the ctrl+alt+tab function.  
   * Layout: This manages the shell "chrome"; the UI that's visible in the normal mode (ie, outside the Overview), that surrounds the main workspace content.
-
- * C libraries
+  * !MessageTray
+   This is the object at the bottom, where your notifications are showed
+   * Notification: Is the instance of one notification (icon, text, etc)
+   * !MessatreTray: The instance of the message tray
+   * !SystemNotificationSource: 
+   * !SummaryItem:
+   * Source:
+   * !FocusGrabber:
+   * !URLHighlighter: This highligh the urls in the messages when you are talking with someone.
  
+  *Panel
+   * Panel:
+   * !ActivitiesButton:
+   * !AnimatedIcon:
+   * !AppMenuButton:
+   * !PanelCorner:
+   * !TextShadower: 
+  
+ * C libraries 
   All of these are libraries written in c. We doesn't rewritte these libraries to implement an extension. The main library we will probably use is St.
   * '''St''': This is the only library will be use for the GUI. It is made in c, using clutter. Manage the css theme of gnome shell and
-  implements useful actors like buttons, text prompts, etc.
+  implements useful actors like buttons, text prompts, etc. See http://developer.gnome.org/st/stable/ to see the avaiable actors as buttons, text labels, etc.
   * Gio: This library allows you to acces to the filesystem easily. http://developer.gnome.org/gio/stable/ch01.html
   * GLib: is a general-purpose utility library, which provides many useful data types, macros, type conversions, string utilities, file utilities, a mainloop abstraction. http://developer.gnome.org/glib/2.32/glib.html
   * Mainloop: Provide listen events. This is the GTK+ event listener. Gnome shell use this mainloop and the clutter one.
@@ -1266,8 +1287,7 @@ I will put in bold the objects and libraries I consider most frequently used whe
   * GDK: An intermediate layer which isolates GTK+ from the details of the windowing system.
   * Clutter: What's this?? It's not familiar to me... :P Remember that it is write in c, but it use GObjectIntrpospection, so we can use clutter directly in javascript(or other programming languages that support GObjectIntrospection) as we saw in [[#knowingClutter-introducingClutter | Knowing clutter]]
 
- * General utils
- 
+ * General utils 
   Some util classes that gnome shell usee.
   * Magnifier: It is a accessibility tool, that allow to deficient users to see the desktop with zoom
   * !TelephatyClient: Manage the chat, IRC, videocalls, audicalls, etc. in gnome shell interface. So, when some person talk us and we see the chat in the message tray, it is because telepathy client are doing his work.
@@ -1279,16 +1299,14 @@ I will put in bold the objects and libraries I consider most frequently used whe
   * !XdndHandler: Handle the drag and drop (DND) function of gnome shell.
   * !WindowManager: Manage the windows behaviour in gnome shell, like wich window is in the top stack of showing, the dimm of one window, etc.
   
- * Prompts
- 
+ * Prompts 
   Contains all the prompts you see in gnome shell, like when you try to install some applicaton (!PolkitAutheticantionPromt) or when you connect some mass storage device to computer and a prompt telling you what to do is shown.
   * !RunDialog: This is the dialog shown when you press Alt+F2.
   * !NotificationDaemon: Manage all notifications. It is a class under !TelephatyClient, etc. Telephaty client send him some data, and the !NotificationDaemon filter it and acts accordingly.
   * !EndSessionDialog: The prompt shown when you click on "power off" or "log out"
   * !KeyringPrompt: It is the prompt shown when the system ask you about a password, like when you connect to a new wifi channel.
  
- * Util not touch
- 
+ * Util not touch 
   I called this group as "util not touch" because it agrouped some classes that, in principle, you won't change to do an extension.
   I said in princyple, because you can change whatever you want (If the extensions validators people are agree)
  <<Anchor(toReview-7)>>
