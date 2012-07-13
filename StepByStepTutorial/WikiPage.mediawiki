@@ -1250,7 +1250,7 @@ I will put in bold the objects and libraries I consider most frequently used whe
   This is the main objects we will touch and rewritte to make our extension
   * '''Overview''': This object have all we see normally when we are in the "Activities" headland. So, it has  the dash, the workspaces, the window actors, the search bar, the display apps, etc.
    * Dash: This is the bar that you have at the left in overview.
-   * !WorkspaceView: This class manage all workspaces, it means, the workspaces at the rigth and also the windows running. So if we want to change how the windows are shown in the overview(i.e. order the windows like KDE or Mac) we have to look into this.
+   * !WorkspaceView: This class manage all workspaces, it means, the workspaces placed at rigth and also the windows running. So if we want to change how the windows are shown in the overview(i.e. order the windows like KDE or Mac) we have to look into this.
    * !ViewSelector: This is the selector for "Windows" and "Applications" tabs.
    * !AppDisplay: This is the selector of all aps when you click "Applications" in the ViewSelector
   * '''!MessageTray'''
@@ -1317,7 +1317,80 @@ I will put in bold the objects and libraries I consider most frequently used whe
   * !PolkitAuthenticationAgent: Manage the authentication for administrator actions, like when you install an application.
   * !AutorunManager: Manage the autorun function, like when you insert some device in the computer and a dialog asking what to do shown.
   * !AutomounManager: Manage the automount of devices, like when you insert a USB stick and it is mounted automatically.
-  
+
+<<Anchor(lookingGlass)>>
+= Looking glass =
+
+This is the tool for debug gnome shell and javascript code for gnome shell.
+To open it do Alt+F2 and type lg. Then a window overlapping all appears.
+Looking glass is divided into tabs: Evaluator, Windows, Memory and Extensions.
+The main view is "Evaluator". Here you can evaluate random code of javascript, accesing gnome shell objects and libraries.
+For example, write this in the evaluator and press enter:
+{{{#!java
+Main.notify("Hello world")
+}}}
+Then, you can see that you acces to the Main object and you call the "notify" function that generate a transient notification. So as you can see, you can evaluate random code and acces all the objects and libraries(clutter, St, Glib, etc) of gnome shell.
+
+Also, in the Evaluator tab, you have a "picker". Do you see a "cuentagotas" at left corner of looking glass? Click into it. Then you can "pick" random object of the interface of gnome shell and know its name. This is useful if you are trying to know "where" is the object you are seeing in the class hierarchy of gnome shell and wich kind of object is.
+
+In the Windows tab, you can see wich windows are currently active. Pay attention to wmclass. This name let you identify a application inside gnome.
+
+The Memory tab.................................................I DON'T KNOW
+
+The Extensions tab tell you wich extensions are installed and some other information about each extension. If some extension reach an error, the error will be displayed there (this is not always true, sometimes, the error is not displayed there and you have to see the ~.xsession-errors file to see if some error ocurred).
+
+
+<<Anchor (myFirstExtension)>>
+= My first extension =
+Finally! Now, we do our first simple extension, a simple hello world.
+For do that, we use a gnome tool for do extensions called "gnome-shell-extension-tool".
+Then, to do your first extension put in a terminal:
+{{{
+gnome-shell-extension-tool --create-extension
+}}}
+
+Then you are asked about the name of your application. For this extension we put "Hello world" and press enter.
+
+Then you are asked about a description. Put something like: Show a hello world label pressing an icon in the system tray.
+
+Then you are asked about an uuid. This is a globally-unique identifier for your extension. For choose a good uuid gnome recomend something related about your email. For example, if your email are first.second1925@server.com I recommend something like theNameOfYourExtension@first.second1925-server.com
+
+In that case, we write helloWorld@email.com and press enter.
+
+Tada! The code of the main file is show in gedit.
+
+Before see into the code, we'll active the extension to test it and see what happens. To active it, we have to go to gnome-tweak-tool (aka advanced settings) (if you didn't install it, install now from your software manager. Search for gnome-tweak-tool).
+Then in gnome-tweak-tool go to "Shell extensions" and turn on your extension (If is not shown, press alt+f2 and put 'r' without quotes and press enter to restart the shell and force to load all extensions).
+
+Now, do you see in the system tray a new icon with a gears shape? click into it and you can see how your extensions tell you "Hello, world!".
+
+Analize this visualy. You see an icon into the system tray. Also, when you click it, you see a label and this label has an animation(from opacity 100% to opacity 0%). Now, we'll see in the code how it is defined.
+
+To see the code of your extension and edit it you have to know where is it. It is in "~/.local/share/gnome-shell/extensions/" and there are all extensions, including your new extension "helloWorld@email.com" folder.
+Go to your extension folder, and you'll see a extension.js, a metadata.json and a stylesheet.css
+
+extension.js is your extension code in javascript. Don't change the name, each extension has to has a extension.js file to work.
+
+metadata.json is the file that holds your context about your extension, like your extension uuid, name, description, etc. If you don't know what is JSon see http://www.json.org/ . Basically is a tool/language to preserve some data of our program between executions.
+
+stylesheet.css is the file where the style of your UI objects are defined (for example the style of the "Hello, world!" label. You can change the font, the background color, the corner radius, etc.)
+It use CSS theming, if you don't know what is CSS technology see http://www.w3schools.com/css/ . The common use is for make webpages. It works together with HTML technology to create webpages, but now it is used for a bunch of diferent things. It is a standard to do things related with themes and visual appearance.
+This file is optional, because maybe your extension doesn't use UI object that needs custom styles.
+
+Now you know wich files is needed for a extension, so we go to see into the code of the extension.
+
+Go to your favorite IDE (Anjuta, Eclipse or even gedit) and open the file extension.js. Then you can see the code of your "hello world" extension.
+
+The code is not commented, so I commented carefully the code to understand it better for a begginer.
+
+This is the code commented:
+{{{!#java
+
+}}}
+
+
+
+
 <<Anchor(allCode)>>
 = All code to download or modify =
 If you want all the code. images, and the wiki code posted in this wiki, you can donwload using git from here
