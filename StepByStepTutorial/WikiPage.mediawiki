@@ -1,6 +1,8 @@
 = Step by step tutorial to create extensions =
 
-''Phrases or words in bigger need to be reviewed to ensure that is correct''
+NOT COMPLETED AND REVISED YET!
+
+''Phrases or words in bigger need to be reviewed to ensure that are correct''
 
 ''To review''
 
@@ -36,6 +38,7 @@
  * [[#knowingGnomeShell|Knowing gnome shell]]
    * [[#knowingGnomeShell-introducing|Introducing gnome shell]]
    * [[#knowingGnomeShell-interactionWithClutter|Interaction with clutter]]
+   * [[#knowingJavascript-Gjs|Gjs and how to use c API gnome libraries from javascript]]
    * [[#knowingGnomeShell-API|API]]
  * [[#lookingGlass|Looking glass]]
  * [[#myFirstExtension | My first extension]]
@@ -45,11 +48,9 @@
  * [[#interestingClasses | Accessing some interesting objects of gnome shell]]
  * [[#extensionExamples | Some extensions examples]]
    * [[#extensionExamples-extensionUsingDash|Extension using dash]]
-   * [[#extensionExamples-extensionUsingWindows|Extension using windows]]
-   * [[#extensionExamples-extensionUsingWorkspace|Extension using workspace]]
-   * [[#extensionExamples-extensionUsingApplications|Extension using applications]]
-   * [[#extensionExamples-extensionUsingMessageTray|Extension using message tray]]
-   * [[#extensionExamples-extensionUsingTopBar|Extension using top bar]]
+   * [[#extensionExamples-extensionUsingUIElements|Extension using UI elements]]
+   * [[#extensionExamples-multipleFileExtension|Multiple file extension]]
+   * [[#extensionExamples-extensionUsingDBUS|Extension using DBUS to comunicate between apps]]
  * [[#allCode | All code to download or modify]]
  * [[#support | Support]]
 
@@ -62,32 +63,32 @@
 
 It is very helpful to develop using an IDE with javascript support. It will help us with code folding, autocompletion, outline, etc.
 
-Gnome has his own IDE for develop, called Anjuta. The problem is that IDE has some feature lacks, like autocompletion, code folding, etc... so for me it is better to develop using eclipse until anjuta envolves to have this kind of features.
+Gnome has his own IDE for develop, called Anjuta. The problem is that IDE has some lacks, like autocompletion, code folding, etc... so for me it is better to develop using eclipse until anjuta gets to have this kind of features.
 
 So, we start setting up eclipse to have javascript support.
 
 Setting up eclipse
 
-Install eclipse from your app store of your distribution. Open eclipse and select your workspace Go to Help->Install new software Select Work with "All available sites" Search for javascript Install That's it!
+Install eclipse from your app store of your distribution. Open eclipse and select your workspace. Go to Help. Install new software. Select Work with "All available sites". Search for javascript. Install. That's it!
 <<Anchor(fromScratch-settingUpEclipse-problems)>>
 === Problems ===
 
 ''I haven't got eclipse in my distribution''
 
 Go to http://www.eclipse.org/downloads/ and download eclipse classic.
-I select work with "All avaiable sites" but nothing is shown
-Go to "Find more software by working with "All available software sites" preferences" and add your eclipse download site, that it depens on the eclipse version you have. For eclipse Juno it is http://download.eclipse.org/releases/juno
+I select work with "All available sites" but nothing is shown.
+Go to "Find more software by working with "All available software sites" preferences" and add your eclipse download site which depens on the eclipse version you have. For eclipse Juno it is http://download.eclipse.org/releases/juno.
 
 [[#index | Go to index]]
 
 <<Anchor(fromScratch-usingEclipse)>>
 == Using eclipse ==
 
-When you create an extension, the extension is saved at ~/.local/shared/gnome-shell/extensions with a gnome-shell extension folder format, so you can't create a project here and edit the files expecting that each change you do reflects directly in the gnome-shell. So, for use eclipse to develop extensions, the best way is to open directly the file you are editing, like ~/.local/shared/gnome-shell/extensions/myExtensionFolder/myExtension.js
+When you create an extension, the extension is saved at ~/.local/shared/gnome-shell/extensions with a gnome-shell extension folder format, so you can't create a project here and edit the files expecting that each change you do reflects directly in the gnome-shell. So, if we use eclipse to develop extensions, the best way is to open directly the file you are editing, like ~/.local/shared/gnome-shell/extensions/myExtensionFolder/myExtension.js
 
-To visualize the changes you have to have enabled the extension. To enable the extension use gnome-tweak-tool.
+To visualize the changes, you need to have enabled the extension. To enable the extension use gnome-tweak-tool.
 
-After that, each change yo do you have to save the file and restart the shell (Alt+F2 , write "r" without quotes, enter)
+After that, every time you make a change, you will have to save the file and restart the shell (Alt+F2 , write "r" without quotes, enter).
 
 [[#index | Go to index]]
 
@@ -96,11 +97,11 @@ After that, each change yo do you have to save the file and restart the shell (A
 
 <<Anchor(knowingJavascript-introducingJavascript)>>
 == Introducing javascript ==
-JavaScript (sometimes abbreviated JS) is a prototype-based scripting language that is dynamic, weakly typed and has first-class functions. It is a multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.
+JavaScript (sometimes abbreviated JS), which is a prototype-based scripting language, is dynamic, weakly typed and has first-class functions. It is a multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.
 
-Gnome-shell is written in javascript because it allows a quick prototyping. It means that it allows to change the code quickly, and do a lot of changes in a easy way. It is needed because gnome-shell is a application that is in a quick development, and it changes a lot in short time.
+Gnome-shell is written in javascript because it allows a quick prototyping. It means that it allows to change the code quickly, and do a lot of changes in a easy way. It is needed because gnome-shell is an application that is in a quick development, and it changes a lot in short time.
 <<Anchor(toReview-1)>>
-The diference between javascript and other dynamic languages (python, ruby, php, etc...) is that javascript doesn't depends in a specific platform, so '''~+gnome-shell can run it without any platform under it +~'''.
+The difference between javascript and other dynamic languages (python, ruby, php, etc...) is that javascript doesn't depend of a specific platform, so '''~+gnome-shell can run it without any platform under it +~'''.
 
 This is an extended web page about programming in javascript (web oriented). Some things changes because we are not programming for the web, but most is the same. There's the web:
 https://developer.mozilla.org/en-US/learn/javascript
@@ -112,7 +113,7 @@ Quick characteristic things:
 <<Anchor(toReview-3)>>
  * '''~+ You can modify the code while running +~'''
  * class.prototype allow you inheritance or modify the base class directly rewriting his code.
- * Variables without scope. So, if you do "var x", x will be in all of your program. The only way to restrict the scope is "let x" that make the variable x only usable in his scope.
+ * Variables without scope. So, if you do "var x", x will be in all of your program. The only way to restrict the scope is "let x" what makes the variable x only usable in his scope.
  * If we want to use "this" outside of his scope we need the class Lang. The use is in this way: functionOutsideOfScope(Lang.bind(this, this.function())). See https://live.gnome.org/GnomeShell/Gjs_StyleGuide ""this" in closures" to see one example.
 
 [[#index | Go to index]]
@@ -120,7 +121,7 @@ Quick characteristic things:
 <<Anchor(knowingJavascript-howExtends)>>
 == How extends functionality ==
 
-'' Don't do anything until we arrive to the extensions headland, because you don't know how to create, enable and some importants parts of an extension''
+'' Don't do anything until we arrive to the extensions headland, because you don't know how to create, enable, as well as some important parts of an extension''
 
 The main way to extend functionality is rewritten the code of the gnome shell in this way:
 
@@ -190,14 +191,14 @@ inections=[];
 injections['injectionOfLookupIndex']=injectToFunction(Workspace.prototype, '_lookupIndex',  function(){return 1;});
 }}}
 
-And to desinject the code
+And to desinject the code:
 
 {{{#!java
 removeInjection(Workspace.prototype, injections,  'injectionOfLookupIndex');
 }}}
 
 <<Anchor(toReview-4)>>
-With this, we can add some code to the function without rewriting all the function. Our code is write '''~+ before the return statement of the original function and after all code of original function+~'''
+With this, we can add some code to the function without rewriting all the function. Our code is written '''~+ before the return statement of the original function and after all code of original function+~'''
 
 We'll see why we need to desinject the code in "my first extensions" headland.
 
@@ -217,27 +218,27 @@ There's three technologies that allow us to use easily clutter with javascript:
 <<Anchor(toReview-5)>>
 Clutter use [[https://live.gnome.org/GObjectIntrospection | GObjectIntrospection]], project that allows to use c programs from other programming languages directly and it allows us to work in javascript with it, instead of using c. '''~+It works transforming the c program API in general files(xml or custom files) allowing to write easily a binding in other program language that can interpret it.+~'''
 
-From that, we need a program that get the general file result from GObjectIntrospection and transform it to a specific program language, like javascript. This program is specific for each program language, an for javascript it is called [[https://live.gnome.org/Gjs | Gjs]].
+From that, we need a program that gets the general file result from GObjectIntrospection and transform it to a specific program language, like javascript. This program is specific for each program language, and for javascript it is called [[https://live.gnome.org/Gjs | Gjs]].
 
-Also, gnome-shell has his own clutter-based toolkit, called [[http://developer.gnome.org/st/stable/ | St]], that give you some useful actors(components in the GUI). Also St is the way for gnome-shell to interact with CSS theming; so the form
+Also, gnome-shell has his own clutter-based toolkit, called [[http://developer.gnome.org/st/stable/ | St]], that gives you some useful actors (components in the GUI). Also St is the way for gnome-shell to interact with CSS theming; so the form
 and color of every button, dialog etc. of gnome shell is defined in /usr/share/gnome-shell/theme, and the only class that
 manage this css is St.
 
 
 So we have:
 Clutter in c -> GObjectIntrospection(result in a generl file) ->
- * -> Gjs(interprets general file from GObjectIntrospection to javascript)
+ * -> Gjs (interprets general file from GObjectIntrospection to javascript)
  * -> pyclutter (interprets general file from GObjectIntrospection to python)
  * -> clutter-perl (interprets general file from GObjectIntrospection to perl)
  * -> etc.
 
 All bindings: http://www.clutter-project.org/about/language-bindings
 
-Important characteristic things in clutter is:
- * Stage: contain some actors(text, rectangles etc). It's the window of the application. Also is an actor.
- * Actor: GUI object
-   * show() : you have to show each actor to be visible to the user
-   * hide() : hide the actor
+Important characteristic things in clutter are:
+ * Stage: contain some actors (text, rectangles etc). It's the window of the application. Also is an actor.
+ * Actor: GUI object.
+   * show() : you have to show each actor to be visible to the user.
+   * hide() : hide the actor.
 
 [[#index | Go to index]]
 
@@ -245,7 +246,7 @@ Important characteristic things in clutter is:
 == Events ==
 
 We need events to do the GUI interactive and reactive to mouse clicks and keyboard inputs.
-Also, we can use custom events inside our program, to communicate by events functions in our program.
+Also, we can use custom events inside our program, to communicate through events, functions in our program.
 
 By default, each actor in clutter has these events:
  * button-press-event: Emitted when the user presses the mouse over the actor.
@@ -255,11 +256,9 @@ By default, each actor in clutter has these events:
  * leave-event: Emitted when the user moves the mouse out of the actor's area.
 All events:
 http://docs.clutter-project.org/docs/clutter/stable/ClutterActor.html
-And look at the bottom, there is all the events emitted by the actor.
+And look at the bottom, here are all the events emitted by the actor.
  
-We can associate each event with one actor and a function that will be called when the event occurs to do
-what we want to do when the event occurs(like move the actor when we click it, change his opacity when we hover it, etc.)
-This association is called "connect".
+We can associate each event with one actor and a function that will be called when the event occurs, and will carry out what we want to happen when the event occurs (like move the actor when we click it, change his opacity when we hover it, etc.). This association is called "connect".
 
 So, to connect one actor to one event:
 actor.connect(eventName, functionToCallWhenEventOccurs);
@@ -294,11 +293,11 @@ function  moveActor(actor, event)
 <<Anchor(knowingClutter-someExamples)>>
 == Some examples with raw clutter ==
 
-Now we will see some examples with clutter, so gnome shell is not there, only clutter.
-Also, if you want all the code, you can get it from github. See [[#allCode | all the code]]
+Now we will see some examples with clutter, but gnome shell is not there, only clutter.
+Also, if you want all the code, you can get it from github. See [[#allCode | all the code]].
 
 <<Anchor(knowingClutter-someExamples-init)>>
-=== Init clutter and stage ===
+=== Initiate clutter and stage ===
 {{{#!java
 //Import the clutter class form the gi repository(the object introspection repository)
 const Clutter = imports.gi.Clutter;
@@ -331,21 +330,21 @@ stage.show();
 Clutter.main();
 }}}
 
-Save this code to a file "InitClutterAndStage.js" and to execute we enter in a terminal:
+Save this code to a file "InitClutterAndStage.js" and to execute it we enter in a terminal:
 {{{
 gjs-console InitClutterAndStage.js
 }}}
-As you see we are using gjs to execute the file, so you have to have Gjs installed
-(search for Gjs in your software management application)
+As you see, we are using gjs to execute the file, so you have to have Gjs installed
+(search for Gjs in your software management application).
 
 [[#index | Go to index]]
 
 <<Anchor(knowingClutter-someExamples-draw)>>
 === Draw something ===
 
-Now we try to draw a rectangle in the stage
+Now we try to draw a rectangle in the stage:
 {{{#!java
-//Import the clutter class form the gi repository(the object introspection repository)
+//Import the clutter class from the gi repository (the object introspection repository).
 const Clutter = imports.gi.Clutter;
 // Initialize clutter
 Clutter.init(null);
@@ -357,10 +356,10 @@ Clutter.init(null);
  */
 let stage = new Clutter.Stage();
 
-// We connect the destroy event to quit from the mainloop when we close the
+// We connect the destroy event to quit from the main loop when we close the
 // window.
 stage.connect("destroy", Clutter.main_quit);
-// Put some title
+// Put some tittle
 stage.title = "Test";
 // Set a color to the stage to show that it is working
 stage.set_background_color(new Clutter.Color({
@@ -387,7 +386,7 @@ actorRectangle.set_background_color(new Clutter.Color({
 }));
 
 stage.add_actor(actorRectangle);
-// As we say, the stage is also an actor, so we shoe it to make visible
+// As we say, the stage is also an actor, so we show it to make visible
 stage.show();
 // Start a main loop so that the stage can animate its contents and respond to
 // user interaction.
@@ -408,7 +407,7 @@ Now, we do something funny. We will add a hover event to the rectangle actor, an
 we hover the actor, the actor will change the position randomly.
 
 {{{#!java
-//Import the clutter class form the gi repository(the object introspection repository)
+//Import the clutter class from the gi repository(the object introspection repository)
 const Clutter = imports.gi.Clutter;
 
 // Initialize clutter
@@ -421,10 +420,10 @@ Clutter.init(null);
  */
 let stage = new Clutter.Stage();
 
-// We connect the destroy event to quit from the mainloop when we close the
+// We connect the destroy event to quit from the main loop when we close the
 // window.
 stage.connect("destroy", Clutter.main_quit);
-// Put some title
+// Put some tittle
 stage.title = "Test";
 // Set a color to the stage to show that it is working
 stage.set_background_color(new Clutter.Color({
@@ -464,16 +463,16 @@ Clutter.main();
 
 function changeRectanglePosition()
 {
-    // We get the size of the stage(our window)
+    // We get the size of the stage (our window)
     let [sizex, sizey] = stage.get_size();
     /*
-     * Math.random return a float between 0 and 1, so we multiply by the size of
+     * Math.random returns a float between 0 and 1, so we multiply by the size of
      * the stage and we acomplish a number between 0-sizeStage
      */
     let newx = Math.floor(Math.random() * sizex);
     let newy = Math.floor(Math.random() * sizey);
     /*
-     * We can access to that because is a global variable. Also, remember that
+     * We can access to that because it is a global variable. Also, remember that
      * with "let" the scope is the block and with "var" the scope is all the
      * environment. In this case,the block is all the environment We put the new
      * random position
@@ -492,12 +491,11 @@ gjs-console ClutterEvents.js
 <<Anchor(knowingClutter-someExamples-animate)>>
 === Animations ===
 
-Now, we add an animation to the actor. This animation only will start each
-time we hover the actor. So we have to put the animation inside the function
+Now, we add an animation to the actor. This animation only will start if we hover the actor. So we have to put the animation inside the function
 we call when hover the actor.
 
 {{{#!java
-//Import the clutter class form the gi repository(the object introspection repository)
+//Import the clutter class from the gi repository(the object introspection repository)
 const
 Clutter = imports.gi.Clutter;
 
@@ -505,7 +503,7 @@ Clutter = imports.gi.Clutter;
 Clutter.init(null);
 /*
  * Create a stage. This function returns a new default stage, with its own
- * window. ClutterStage is derived from the ClutterActor object so many of that
+ * window. ClutterStage is derived from the ClutterActor object, so many of these
  * object's functions are useful for the stage. For instance, call
  * Clutter.Stage.get_default().show() to make the stage visible.
  */
@@ -1157,7 +1155,7 @@ So gnome shell is "what you see and what you use" to open applications, changing
 Gnome shell is made 50% in c 50% in javascript. You only have to touch the javascript code, because is the code that you can modify for your extension. Maybe, with the pass of the time, the percentage of c code will decrease.
 Gnome shell manage the workspace, notifications, windows(how is managed, not the rendering(which is managed by Mutter)), dash, top bar, and lacunh applications.
 It uses GPU acceleration. The rendering of the interface is managed by clutter, so gnome shell doesn't touch graphics.
-Also, gnome shell doesn't touch css, this is managed by St.
+Also, gnome shell doesn't touch css, this is managed by St, we will see what St is.
 And, the last thing you have to know is that gnome shell, currently, is not using the animation framework of clutter(because when gnome shell was did the animation framework in clutter was not present), instead, clutter use [[http://hosted.zeh.com.br/tweener/docs/en-us/ | Tweener]]. We'll see an example of tweener in [[#myFirstExtension | My first extension]] headland.
 
 Gnome shell has these parts:
@@ -1214,6 +1212,49 @@ So gnome shell implements its behaviour. I mean, gnome shell define how the acto
 
 [[#index | Go to index]]
 
+
+<<Anchor((knowingJavascript-Gjs))>>
+== Gjs and how to use c API gnome libraries from javascript ==
+
+Gjs is the library that allows you to use c libraries of gnome(in fact, almost all libraries of gnome are written in c) from javascript using GObject-introspection. GObject-introspection is a technique to allow developers to easily build bindings that allows you to use the c libraries from other computer languages like javascript, python, etc.
+You have not worry about it, except that when you need to use a function from some gnome librarie, the documentation is written
+for the C language. So you "don't know" exactly how your function is called if you want to use it from javascript.
+
+But, there are some rules for map the c API to javascript, so, reading the c API reference you can know how the function
+you want to use is called in javascript.
+In this page you have the rules that you have to follow to know how the function you want to use is called:
+https://live.gnome.org/Gjs/Mapping
+
+So, for example, if we are doing some extension, and we want to create a button in the top bar of gnome-shell
+we go to the API reference of St in http://developer.gnome.org/st/stable/ and we look for a StBin, see http://developer.gnome.org/st/stable/StBin.html
+
+Fist we see that the class(c struct) is called StBin, so, I guess that the class in javascript is called St.Bin, so for create a new
+StBin we do
+{{{!#java
+St.Bin()
+}}}
+
+But, we also can pass to the constructor, as wee saw before in Gjs/Mapping webpage, a properties map. Wich properties can we pas to the cosntructor? All of the object hierarchy. So if we see into the StBin class we only see a few properties, but if we see at the object
+hierarchy headland http://developer.gnome.org/st/stable/StBin.html#StBin.object-hierarchy we also see that StBin is inhereted from
+StWidget. So we can use these properties also in the cosntructor. So for example we can do the next StBin call:
+
+{{{!#java
+button = new St.Bin({ style_class: 'panel-button',
+                    reactive: true,
+                    can_focus: true,
+                    x_fill: true,
+                    y_fill: false,
+                    track_hover: true });
+}}}
+
+Here we are modifying properties from StBin and also from StWidget(because StBin is inhereted from StWidget). So for example, style_class property comes from StWidget class, and x_fill property comes from StBin class.
+The same happens to clutter API, etc.
+So now, we know how to interpret c APIs to use into our javascript code.
+
+
+
+[[#index | Go to index]]
+
 <<Anchor(knowingGnomeShell-API)>>
 == API ==
 
@@ -1243,6 +1284,8 @@ As you can see, the most attributes of some class is the main class of a file (c
 
 Now, we we'll see a brief explanation of each level, group, class, etc.
 I will put in bold the objects and libraries I consider most frequently used when we do an extension and in violet colour in the diagram. So I recommend you to only see these now, and after doind some extension example, you can go back here and see the other classes, wich are very interesting and defines very useful things of the entire gnome platform.
+
+[[#index | Go to index]]
 
 === Class explanation ===
 
@@ -1318,6 +1361,8 @@ I will put in bold the objects and libraries I consider most frequently used whe
   * !AutorunManager: Manage the autorun function, like when you insert some device in the computer and a dialog asking what to do shown.
   * !AutomounManager: Manage the automount of devices, like when you insert a USB stick and it is mounted automatically.
 
+[[#index | Go to index]]
+
 <<Anchor(lookingGlass)>>
 = Looking glass =
 
@@ -1339,6 +1384,7 @@ The Memory tab.................................................I DON'T KNOW
 
 The Extensions tab tell you wich extensions are installed and some other information about each extension. If some extension reach an error, the error will be displayed there (this is not always true, sometimes, the error is not displayed there and you have to see the ~.xsession-errors file to see if some error ocurred).
 
+[[#index | Go to index]]
 
 <<Anchor (myFirstExtension)>>
 = My first extension =
@@ -1377,19 +1423,173 @@ stylesheet.css is the file where the style of your UI objects are defined (for e
 It use CSS theming, if you don't know what is CSS technology see http://www.w3schools.com/css/ . The common use is for make webpages. It works together with HTML technology to create webpages, but now it is used for a bunch of diferent things. It is a standard to do things related with themes and visual appearance.
 This file is optional, because maybe your extension doesn't use UI object that needs custom styles.
 
-Now you know wich files is needed for a extension, so we go to see into the code of the extension.
+Now you know wich files is needed for a extension, but you don't know how a extension is structured, so I do you a brief explanation:
+
+The extension has three must-to-be functions. init(), enable() and disable().
+
+Don’t do anything major in init()
+
+init() is there to have anything that needs to happen at first-run, like binding text domains. Do not make any UI modifications or setup any callbacks or anything in init(). Your extension will break, and gnome-developers will reject it. Do any and all modifications in enable().
+Undo all UI modifications in disable()
+
+If you make any UI modifications in enable(), you need to undo them in disable(). So, if you add an icon to the top bar when your extension is enabled, you need to remove it. Simple. Failure to do so will be an immediate rejection.
+Remove all possible callback sources.
+
+If you’re writing an extension, you must disconnect all signals and remove all Mainloop sources. Failure to do so will be an immediate rejection. So, if you connect to a signal using global.display.connect('window-created', onWindowCreated);, you need to disconnect it in this manner:
+
+{{{#!java
+let _windowCreatedId;
+ 
+function enable() {
+    _windowCreatedId = global.display.connect('window-created', onWindowCreated);
+}
+ 
+function disable() {
+    global.display.disconnect(_windowCreatedId);
+}
+}}}
+The same goes for any timeouts or intervals added with the Mainloop module. Use Mainloop.source_remove to make sure your source is removed.
+
+Maybe you don't understand what the mainloop is, etc. but at least, you know that these are the rules, and we have to satisfy these rules.
+In some time, when we do some more complicated extensions and we use callbacks, signals, the mainloop, inject code, etc. we need to 
+remember these rules.
+
+See: http://blog.mecheye.net/2012/02/requirements-and-tips-for-getting-your-gnome-shell-extension-approved/
+
+Once we know the rules, go to see into the code of the "hello world" extension.
 
 Go to your favorite IDE (Anjuta, Eclipse or even gedit) and open the file extension.js. Then you can see the code of your "hello world" extension.
 
 The code is not commented, so I commented carefully the code to understand it better for a begginer.
 
 This is the code commented:
-{{{!#java
+{{{#!java
+
+/*In this example we will be click a button in the top bar,
+  causing an event that create a text label (hello world), which with some
+  animation, will be decreasing its opacity from 100% to 0%
+ */
+
+
+/*Import St because is the library that allow you to create UI elements*/
+const St = imports.gi.St;
+/*
+  Import Main because is the instance of the class that have all the UI elements
+  and we have to add to the Main instance our UI elements
+  */
+const Main = imports.ui.main;
+/*Import tweener to do the animations of the UI elements*/
+const Tweener = imports.ui.tweener;
+
+/*Global variables for use as button to click (button) and a text label.*/
+let text, button;
+
+/*
+  Function to call when the label is opacity 0%, as the label remains as a
+  UI element, but not visible, we have to delete it explicitily. So since
+  the label reaches 0% of opacity we remove it from Main instance.
+ */
+function _hideHello() {
+    Main.uiGroup.remove_actor(text);
+    text = null;
+}
+
+function _showHello() {
+	/*if text not already present, we create a new UI element, using ST library, that allows us
+	  to create UI elements of gnome-shell.
+	  REFERENCE: http://developer.gnome.org/st/stable/
+	 */
+    if (!text) {
+        text = new St.Label({ style_class: 'helloworld-label', text: "Hello, world!" });
+        Main.uiGroup.add_actor(text);
+    }
+    
+    text.opacity = 255;
+    
+    /*
+      we have to choose the monitor we want to display the hello world label. Since in gnome-shell
+      always has a primary monitor, we use it(the main monitor)
+     */
+    let monitor = Main.layoutManager.primaryMonitor;
+
+    /*
+     we change the position of the text to the center of the monitor.
+     */
+    text.set_position(Math.floor(monitor.width / 2 - text.width / 2),
+                      Math.floor(monitor.height / 2 - text.height / 2));
+
+    /*And using tweener for the animations, we indicate to tweener that we want
+      to go to opacity 0%, in 2 seconds, with the type of transition easeOutQuad, and,
+      when this animation has completed, we execute our function _hideHello.
+      REFERENCE: http://hosted.zeh.com.br/tweener/docs/en-us/
+     */
+    Tweener.addTween(text,
+                     { opacity: 0,
+                       time: 2,
+                       transition: 'easeOutQuad',
+                       onComplete: _hideHello });
+}
+
+/*This is the init function, here we have to put our code to initialize our extension.
+ we have to be careful with init(), enable() and disable() and do the right things here.
+ REFERENCE: http://blog.mecheye.net/2012/02/requirements-and-tips-for-getting-your-gnome-shell-extension-approved/
+ */
+function init() {
+	/*
+	  We create a button for the top panel. We pass to the constructor a map of properties, properties from St.bin and its
+	  parent classes, like stWidget. So we declare this properties: a style class(from css theming of gnome shell), we made it reactive
+	  so the button respond for the mouse clicks, we made it that can focus, so marks the button as being able to receive keyboard focus 
+	  via keyboard navigation, we made the button to fill the x space, and we don't want to fill the y space, so we set the values trues and false respectively
+	  and we want that the button be reactive to the hover of the mouse, so we set the value of the track_hover property to true.
+	 */
+    button = new St.Bin({ style_class: 'panel-button',
+                          reactive: true,
+                          can_focus: true,
+                          x_fill: true,
+                          y_fill: false,
+                          track_hover: true });
+    /*
+      We create an icon with the system-status-icon icon and give it the name "system-run"
+     */
+    let icon = new St.Icon({ icon_name: 'system-run',
+                             style_class: 'system-status-icon' });
+    /*
+      we put as a child of the button the icon, so, in the structure of actors we have the icon inside the button that is a
+      container.
+     */
+    button.set_child(icon);
+    /*
+      we connect the actor signal "button-press-event" from the button to the funcion _showHello. In this manner,
+      when we press the button, this signal is emitted, and we captured it and execute the _showHello function.
+      You can see all signals in the clutter reference(because we are using St that implements actors from clutter, and
+      this signals comes from the actor class): http://developer.gnome.org/clutter/stable/ClutterActor.html#ClutterActor.signals
+     */
+    button.connect('button-press-event', _showHello);
+}
+
+/*
+  We have to write here our main extension code and the things that actually make works the extension(Add ui elements, signals, etc).
+ */
+function enable() {
+	/*
+	  We add the button we created before to the rigth panel of the top panel (where the sound and wifi settings are)
+	 */
+    Main.panel._rightBox.insert_child_at_index(button, 0);
+}
+
+/*We have to delete all conections and things from our extensions, to let the system how it is before our extension. So
+ We have to unconnect the signals we connect, we have to delete all UI elements we created, etc.
+ */
+function disable() {
+	/*
+	 we remove the button from the right panel
+	 */
+    Main.panel._rightBox.remove_child(button);
+}
 
 }}}
 
-
-
+[[#index | Go to index]]
 
 <<Anchor(allCode)>>
 = All code to download or modify =
