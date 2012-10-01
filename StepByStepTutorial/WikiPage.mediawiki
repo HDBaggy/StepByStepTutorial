@@ -6,9 +6,6 @@ NOT COMPLETED AND REVISED YET!
 
 ''To review''
 
-[[#toReview-1]]
-[[#toReview-2]]
-[[#toReview-3]]
 [[#toReview-4]]
 [[#toReview-5]]
 [[#toReview-6]]
@@ -101,17 +98,15 @@ JavaScript (sometimes abbreviated JS), which is a prototype-based scripting lang
 
 Gnome-shell is written in javascript because it allows a quick prototyping. It means that it allows to change the code quickly, and do a lot of changes in a easy way. It is needed because gnome-shell is an application that is in a quick development, and it changes a lot in short time.
 <<Anchor(toReview-1)>>
-The difference between javascript and other dynamic languages (python, ruby, php, etc...) is that javascript doesn't depend of a specific platform, so '''~+gnome-shell can run it without any platform under it +~'''.
+The difference between javascript and other dynamic languages (python, ruby, php, etc...) is that javascript doesn't depend of a specific platform, so gnome-shell can run it with its own platform under it (Gjs).
 
 This is an extended web page about programming in javascript (web oriented). Some things changes because we are not programming for the web, but most is the same. There's the web:
 https://developer.mozilla.org/en-US/learn/javascript
 
 Quick characteristic things:
-<<Anchor(toReview-2)>>
- * '''~+ Classes, objects, variables, functions is less or more the same. +~'''
+ * Classes, objects, variables, functions is less or more the same.
  * To access some function or variable: object.function() / object.variable or object.function() / object['function']()
-<<Anchor(toReview-3)>>
- * '''~+ You can modify the code while running +~'''
+ * You can modify the code while running. It is called monkey-patching.
  * class.prototype allow you inheritance or modify the base class directly rewriting his code.
  * Variables without scope. So, if you do "var x", x will be in all of your program. The only way to restrict the scope is "let x" what makes the variable x only usable in his scope.
  * If we want to use "this" outside of his scope we need the class Lang. The use is in this way: functionOutsideOfScope(Lang.bind(this, this.function())). See https://live.gnome.org/GnomeShell/Gjs_StyleGuide ""this" in closures" to see one example.
@@ -903,7 +898,7 @@ BoardView.prototype = {
              the actor will check if someone win the game.
              */
             for (let i = 0; i < sideSize; i++)
-            {               
+            {			    
                 for (let j = 0; j < sideSize; j++)
                 {
                     let xpos = ((i + 1) * OX_LINE_WIDTH_PX) + (i * OX_SQUARE_SIZE_PX);
@@ -916,7 +911,7 @@ BoardView.prototype = {
                     /*
                      We make the actor reactive, because we want to make the
                      square interactive and responsible of the mouse events.
-                     */                 
+                     */					
                     squareActor.set_reactive(true);
 
                     let x = i;
@@ -1121,7 +1116,6 @@ BoardView.prototype = {
 let view = new BoardView(OX_PLAYERS, OX_SIDE_SIZE);
 //Start our GUI
 view.show();
-};
 
 }}}
 
