@@ -1374,7 +1374,6 @@ Also, in the Evaluator tab, you have a "picker". Do you see a "cuentagotas" at l
 
 In the Windows tab, you can see wich windows are currently active. Pay attention to wmclass. This name let you identify a application inside gnome.
 
-The Memory tab.................................................I DON'T KNOW
 
 The Extensions tab tell you wich extensions are installed and some other information about each extension. If some extension reach an error, the error will be displayed there (this is not always true, sometimes, the error is not displayed there and you have to see the ~.xsession-errors file to see if some error ocurred).
 
