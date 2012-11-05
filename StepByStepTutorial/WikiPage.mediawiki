@@ -14,17 +14,17 @@ NOT COMPLETED AND REVISED YET!
 This tutorial is for gnome 3.4. The main differences between 3.4 and 3.6 are:
 
 
-* OpenSearch and PlacesDisplay were removed
-* The ViewSelector tab system was replaced with a simpler page API
-* The screensaver is in process and accessed as Main.screenShield
-* The session mode now changes at runtime (and this affect enablement of extensions)
-* Some modules were moved into js/ui/components/
-* St.IconType was removed, so you need to add ‘-symbolic’ to icon names
-* Notifications, status items and search providers deal with GIcons,not icon names
-* Message tray sources can override the right click menu
-* ConsoleKit/Systemd were unified as util.LoginManager
-* Input sources are stored in GSettings and affect IBus too
-* The volume status indicator was split in the menu and the actual indicator
+ * !OpenSearch and !PlacesDisplay were removed
+ * The !ViewSelector tab system was replaced with a simpler page API
+ * The screensaver is in process and accessed as Main.screenShield
+ * The session mode now changes at runtime (and this affect enablement of extensions)
+ * Some modules were moved into js/ui/components/
+ * St.!IconType was removed, so you need to add ‘-symbolic’ to icon names
+ * Notifications, status items and search providers deal with GIcons, not icon names
+ * Message tray sources can override the right click menu
+ * ConsoleKit/Systemd were unified as util.!LoginManager
+ * Input sources are stored in GSettings and affect IBus too
+ * The volume status indicator was split in the menu and the actual indicator
 
 So take them into account until I update this wiki to gnome 3.6
 
