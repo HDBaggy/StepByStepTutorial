@@ -1241,7 +1241,7 @@ we go to the API reference of St in http://developer.gnome.org/st/stable/ and we
 
 Fist we see that the class(c struct) is called StBin, so, I guess that the class in javascript is called St.Bin, so for create a new
 StBin we do
-{{{!#java
+{{{!# java
 St.Bin()
 }}}
 
@@ -1249,7 +1249,7 @@ But, we also can pass to the constructor, as wee saw before in Gjs/Mapping webpa
 hierarchy headland http://developer.gnome.org/st/stable/StBin.html#StBin.object-hierarchy we also see that StBin is inhereted from
 StWidget. So we can use these properties also in the cosntructor. So for example we can do the next StBin call:
 
-{{{!#java
+{{{!# java
 button = new St.Bin({ style_class: 'panel-button',
                     reactive: true,
                     can_focus: true,
@@ -1299,6 +1299,10 @@ I will put in bold the objects and libraries I consider most frequently used whe
 [[#index | Go to index]]
 
 === Class explanation ===
+'''Warning''': a better documentation for the API is here: http://mathematicalcoffee.blogspot.com.es/2012/09/gnome-shell-javascript-source.html .
+We are working together to embed the documentation here. Until this arrive, I recommend to see her post instead of the next class explanation.
+
+The only reason you may have to see the next class explanation is that the diagram is correlated with it
 
  * MainUI 
   This is the main objects we will touch and rewritte to make our extension
